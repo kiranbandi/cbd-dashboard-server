@@ -26,8 +26,8 @@ csv()
     .then((data) => {
         jsonData = _.groupBy(data, (record) => { return record.Resident_Name });
         // Start the server once the data is read and ready to be served
-        // https.createServer({}, app).listen(8443, function() { winston.info("Server Live on Port 8443") })
-        app.listen(8443, () => { winston.info("Server Live on Port 8443") });
+        // https.createServer(options, app).listen(8081, function() { winston.info("Server Live on Port 8081") })
+        app.listen(8081, () => { winston.info("Server Live on Port 8081") });
     })
 
 app.get('/get-all-residents', verifyToken, (req, res) => {
