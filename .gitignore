@@ -70,8 +70,5 @@ typings/
 # next.js build output
 .next
 
-
-package.json
-
 # config file
 config.js
