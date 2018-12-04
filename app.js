@@ -13,11 +13,18 @@ var jwt = require('jsonwebtoken');
 // Use morgan for logging Requests , combined along with log outputs from winston
 app.use(morgan('combined', { stream: winston.stream }));
 
-// // Link keys
-// const options = {
-//     cert: fs.readFileSync('./key/fullchain.pem'),
-//     key: fs.readFileSync('./key/privkey.pem')
-// }
+app.use(function(req, res, next) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST');
+    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type, x-access-token');
+    next();
+});
+
+// Link keys
+const options = {
+    cert: fs.readFileSync('./key/fullchain.pem'),
+    key: fs.readFileSync('./key/privkey.pem')
+}
 
 var jsonData;
 
@@ -42,37 +49,20 @@ app.get('/get-resident-data', verifyToken, (req, res) => {
 });
 
 app.get('/login', (req, res) => {
-
-    // Setting response headers
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    // Request methods you wish to allow
-    res.setHeader('Access-Control-Allow-Methods', 'GET');
-    // Request headers you wish to allow
-    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
-
     // Temporary solution will need to replace with users data checking from DB later on
     var { username = '', password = '' } = req.query;
-
     if (username == 'emcbd' && password == 'emcbd') {
         // create a token
         var token = jwt.sign({ id: username }, config.key, {
             expiresIn: 86400 // expires in 24 hours
         });
         res.status(200).send({ auth: true, token });
+    } else {
+        res.status(401).send({ auth: false, token: null });
     }
-    res.status(401).send({ auth: false, token: null });
 })
 
 function verifyToken(req, res, next) {
-
-    // Setting response headers
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    // Request methods you wish to allow
-    res.setHeader('Access-Control-Allow-Methods', 'GET');
-    // Request headers you wish to allow
-    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
-
-
     var token = req.headers['x-access-token'];
     if (!token) {
         return res.status(403).send({ auth: false, message: 'No token provided.' });

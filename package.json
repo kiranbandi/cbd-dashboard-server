@@ -4,7 +4,7 @@
     "description": "NodeJS Rest API backend for EM CBD Dashboard UI",
     "main": "app.js",
     "scripts": {
-        "start": "nodemon --inspect app.js",
+        "start": "nodemon --inspect-brk app.js",
         "prod": "node app.js"
     },
     "keywords": [
