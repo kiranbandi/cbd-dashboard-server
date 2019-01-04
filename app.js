@@ -9,6 +9,12 @@ var csv = require('csvtojson');
 var _ = require('lodash');
 var config = require('./config');
 var jwt = require('jsonwebtoken');
+var path = require('path');
+
+// For handling file uploads
+const fileUpload = require('express-fileupload');
+// default options
+app.use(fileUpload());
 
 // Use morgan for logging Requests , combined along with log outputs from winston
 app.use(morgan('combined', { stream: winston.stream }));
@@ -46,6 +52,25 @@ app.get('/get-resident-data', verifyToken, (req, res) => {
     // Send the data for the required resident
     const residentData = jsonData[req.query.residentName] || [];
     res.end(JSON.stringify(residentData));
+});
+
+app.post('/file-upload', verifyToken, (req, res) => {
+
+    if (!req.files || Object.keys(req.files).length == 0) {
+        return res.status(400).send('No files were uploaded.');
+    }
+
+    // The name of the input field  is used to retrieve the uploaded file
+    let rcmFile = req.files.rcmFile;
+
+    console.log(__dirname + '/files/rcmFile-' + Date.now() + '.csv');
+    // Use the mv() method to place the file somewhere on your server
+    rcmFile.mv(path.resolve(__dirname + '/files/rcmFile-' + Date.now() + '.csv'), function(err) {
+        if (err)
+            return res.status(500).send(err);
+        res.status(200).send('upload success');
+    });
+
 });
 
 app.get('/login', (req, res) => {
