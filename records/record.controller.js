@@ -3,8 +3,9 @@ const router = express.Router();
 const recordService = require('./record.service');
 
 // routes
-router.get('/getRecords/:username', getRecordByUserName);
+router.get('/all/:username', getRecordByUserName);
 router.post('/store', storeRecords);
+
 
 module.exports = router;
 

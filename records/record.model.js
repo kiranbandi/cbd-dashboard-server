@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const schema = new Schema({
     username: { type: String, required: true },
-    observation_date: { type: Date, default: Date.now },
+    observation_date: { type: String },
     epa: { type: String, required: true },
     feedback: { type: String, required: false },
     observer_name: { type: String, required: true },

@@ -11,6 +11,5 @@ async function getRecordByUserName(username) {
 }
 
 async function createMultiple(recordsList) {
-    //  There will always be less than 500 records so its okay to spin parallel inserts
     return await Record.collection.insert(recordsList);
 }
