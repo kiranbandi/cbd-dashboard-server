@@ -16,7 +16,8 @@ app.use(morgan('combined', { stream: winston.stream }));
 // Setting response headers to be used for all API endpoints
 app.use(function(req, res, next) {
     res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type, x-access-token');
+    res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS,DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type, authorization');
     next();
 });
 
@@ -38,8 +39,8 @@ app.listen(8081, () => { winston.info("Server Live on Port 8081") });
 // use JWT auth to secure the api
 app.use(jwt());
 
-// global error handler
-app.use(errorHandler);
-
 // api routes for authentication and user related APIs
 app.use('/users', require('./users/user.controller'));
+
+// global error handler
+app.use(errorHandler);

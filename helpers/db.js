@@ -5,5 +5,6 @@ mongoose.connect(config.DbConnectionString);
 mongoose.Promise = global.Promise;
 
 module.exports = {
-    User: require('../users/user.model')
+    User: require('../users/user.model'),
+    Record: require('../records/record.model'),
 };

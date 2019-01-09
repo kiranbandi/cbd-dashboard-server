@@ -3,6 +3,8 @@ const Schema = mongoose.Schema;
 
 const schema = new Schema({
     username: { type: String, unique: true, required: true },
+    email: { type: String, required: true },
+    fullname: { type: String, required: true },
     // the password is stored as a hash 
     hash: { type: String, required: true },
     // accessType can be admin, resident, supervisor
