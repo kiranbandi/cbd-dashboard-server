@@ -32,12 +32,12 @@ async function authenticate({ username, password }) {
 
 // show users who have accessType set to residents 
 async function getAllResidentNames() {
-    return await User.find({ accessType: 'resident' }).select('username');
+    return await User.find({ accessType: 'resident' }, "username fullname");
 }
 
 // show all users
 async function getAllNames() {
-    return await User.find().select('username');
+    return await User.find({}, "username");
 }
 
 // show data for a particular user

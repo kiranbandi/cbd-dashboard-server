@@ -42,5 +42,8 @@ app.use(jwt());
 // api routes for authentication and user related APIs
 app.use('/users', require('./users/user.controller'));
 
+// api routes for record and data fetching APIs
+app.use('/records', require('./records/record.controller'));
+
 // global error handler
 app.use(errorHandler);

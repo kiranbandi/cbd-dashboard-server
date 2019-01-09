@@ -2,15 +2,15 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const schema = new Schema({
-    username: { type: String, required: false },
+    username: { type: String, required: true },
     observation_date: { type: Date, default: Date.now },
-    epa: { type: String, required: false },
+    epa: { type: String, required: true },
     feedback: { type: String, required: false },
-    observer_name: { type: String, required: false },
+    observer_name: { type: String, required: true },
     observer_type: { type: String, required: false },
     professionalism_safety: { type: String, required: false },
-    rating: { type: String, required: false },
-    resident_name: { type: String, required: false },
+    rating: { type: String, required: true },
+    resident_name: { type: String, required: true },
     situation_context: { type: String, required: false },
     type: { type: String, required: false }
 });

@@ -3,12 +3,19 @@ const router = express.Router();
 const recordService = require('./record.service');
 
 // routes
-router.get('/username', authenticate);
+router.get('/getRecords/:username', getRecordByUserName);
+router.post('/store', storeRecords);
 
 module.exports = router;
 
-function getAllResidents(req, res, next) {
-    recordService.getAllResidents()
-        .then(users => res.json(users))
+function getRecordByUserName(req, res, next) {
+    recordService.getRecordByUserName(req.params.username)
+        .then(records => res.json(records))
+        .catch(err => next(err));
+}
+
+function storeRecords(req, res, next) {
+    recordService.createMultiple(req.body.recordsList)
+        .then(response => res.json(response))
         .catch(err => next(err));
 }
