@@ -1,102 +1,45 @@
 const express = require('express');
 const fs = require('fs');
 const https = require('https');
-var shortid = require('shortid');
-var app = express();
 var morgan = require('morgan');
-var winston = require('./winston');
-var csv = require('csvtojson');
-var _ = require('lodash');
-var config = require('./config');
-var jwt = require('jsonwebtoken');
-var path = require('path');
+var winston = require('./helpers/winston');
+var jwt = require('./helpers/jwt');
+const bodyParser = require('body-parser');
+const errorHandler = require('./helpers/errorHandler');
 
-// For handling file uploads
-const fileUpload = require('express-fileupload');
-// default options
-app.use(fileUpload());
+// Initialise the express app
+var app = express();
 
 // Use morgan for logging Requests , combined along with log outputs from winston
 app.use(morgan('combined', { stream: winston.stream }));
 
+// Setting response headers to be used for all API endpoints
 app.use(function(req, res, next) {
     res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST');
     res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type, x-access-token');
     next();
 });
 
-// Link keys
+// Attach data from API call to request object body
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
+// Link keys that will be required for HTTPS access
 const options = {
     cert: fs.readFileSync('./key/fullchain.pem'),
     key: fs.readFileSync('./key/privkey.pem')
 }
 
-var jsonData;
+// Server for production site
+// https.createServer(options, app).listen(8081, function() { winston.info("Server Live on Port 8081") })
+// Server for local access during development and testing
+app.listen(8081, () => { winston.info("Server Live on Port 8081") });
 
-csv()
-    .fromFile('./files/mock-data.csv')
-    .then((data) => {
-        jsonData = _.groupBy(data, (record) => { return record.Resident_Name });
-        // Start the server once the data is read and ready to be served
-        // https.createServer(options, app).listen(8081, function() { winston.info("Server Live on Port 8081") })
-        app.listen(8081, () => { winston.info("Server Live on Port 8081") });
-    })
+// use JWT auth to secure the api
+app.use(jwt());
 
-app.get('/get-all-residents', verifyToken, (req, res) => {
-    // Send the list of all residents read from the file
-    res.end(JSON.stringify(Object.keys(jsonData)));
-});
+// global error handler
+app.use(errorHandler);
 
-app.get('/get-resident-data', verifyToken, (req, res) => {
-    // Send the data for the required resident
-    const residentData = jsonData[req.query.residentName] || [];
-    res.end(JSON.stringify(residentData));
-});
-
-app.post('/file-upload', verifyToken, (req, res) => {
-
-    if (!req.files || Object.keys(req.files).length == 0) {
-        return res.status(400).send('No files were uploaded.');
-    }
-
-    // The name of the input field  is used to retrieve the uploaded file
-    let rcmFile = req.files.rcmFile;
-
-    console.log(__dirname + '/files/rcmFile-' + Date.now() + '.csv');
-    // Use the mv() method to place the file somewhere on your server
-    rcmFile.mv(path.resolve(__dirname + '/files/rcmFile-' + Date.now() + '.csv'), function(err) {
-        if (err)
-            return res.status(500).send(err);
-        res.status(200).send('upload success');
-    });
-
-});
-
-app.get('/login', (req, res) => {
-    // Temporary solution will need to replace with users data checking from DB later on
-    var { username = '', password = '' } = req.query;
-    if (username == 'emcbd' && password == 'emcbd') {
-        // create a token
-        var token = jwt.sign({ id: username }, config.key, {
-            expiresIn: 86400 // expires in 24 hours
-        });
-        res.status(200).send({ auth: true, token });
-    } else {
-        res.status(401).send({ auth: false, token: null });
-    }
-})
-
-function verifyToken(req, res, next) {
-    var token = req.headers['x-access-token'];
-    if (!token) {
-        return res.status(403).send({ auth: false, message: 'No token provided.' });
-    }
-    jwt.verify(token, config.key, function(err, decoded) {
-        if (err)
-            return res.status(500).send({ auth: false, message: 'Failed to authenticate token.' });
-        // if everything good, save to request for use in other routes
-        req.userId = decoded.id;
-        next();
-    });
-}
+// api routes for authentication and user related APIs
+app.use('/users', require('./users/user.controller'));
