@@ -32,9 +32,9 @@ const options = {
 }
 
 // Server for production site
-// https.createServer(options, app).listen(8081, function() { winston.info("Server Live on Port 8081") })
-// Server for local access during development and testing
-app.listen(8081, () => { winston.info("Server Live on Port 8081") });
+https.createServer(options, app).listen(8081, function() { winston.info("Server Live on Port 8081") })
+    // Server for local access during development and testing
+    // app.listen(8081, () => { winston.info("Server Live on Port 8081") });
 
 // use JWT auth to secure the api
 app.use(jwt());
