@@ -39,6 +39,8 @@ function getAllResidentNames(req, res, next) {
         .then(users => {
             if (accessType == "admin") {
                 return res.json(users);
+            } else if (accessType == "reviewer") {
+                return res.json(users);
             } else if (accessType == "supervisor") {
                 return res.json(users.filter((user) => accessList.indexOf(user.username) > -1));
             }

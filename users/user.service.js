@@ -2,6 +2,7 @@ const config = require('../config');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const db = require('../helpers/db');
+const recordService = require('../records/record.service');
 const User = db.User;
 
 module.exports = {
@@ -32,7 +33,7 @@ async function authenticate({ username, password }) {
 
 // show users who have accessType set to residents 
 async function getAllResidentNames() {
-    return await User.find({ accessType: 'resident' }, "username fullname");
+    return await User.find({ accessType: 'resident' }, "username fullname uploadedData currentPhase programStartDate rotationSchedule");
 }
 
 // show all users
@@ -71,5 +72,8 @@ async function update(username, userParam) {
 
 // find a record by username and then delete it
 async function deleteUser(username) {
+    // first delete all the resident records against the given username
+    await recordService.deleteRecords(username)
+        // then delete the actual user record
     await User.findOne({ username }).remove();
 }

@@ -3,7 +3,8 @@ const Record = db.Record;
 
 module.exports = {
     getRecordByUserName,
-    createMultiple
+    createMultiple,
+    deleteRecords
 };
 
 async function getRecordByUserName(username) {
@@ -12,4 +13,8 @@ async function getRecordByUserName(username) {
 
 async function createMultiple(recordsList) {
     return await Record.collection.insert(recordsList);
+}
+
+async function deleteRecords(username) {
+    return await Record.remove({ username });
 }

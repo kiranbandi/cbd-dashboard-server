@@ -10,7 +10,11 @@ const schema = new Schema({
     // accessType can be admin, resident, supervisor
     accessType: { type: String, required: true },
     accessList: { type: String, required: false },
-    createdDate: { type: Date, default: Date.now }
+    createdDate: { type: Date, default: Date.now },
+    uploadedData: { type: Date, default: Date.now },
+    currentPhase: { type: String },
+    programStartDate: { type: Date, default: Date.now },
+    rotationSchedule: { type: String }
 });
 
 schema.set('toJSON', { virtuals: true });
