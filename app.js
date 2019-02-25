@@ -22,8 +22,8 @@ app.use(function(req, res, next) {
 });
 
 // Attach data from API call to request object body
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: false }));
+app.use(bodyParser.json({ limit: '50mb' }));
 
 // Link keys that will be required for HTTPS access
 const options = {
