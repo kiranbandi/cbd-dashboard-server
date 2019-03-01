@@ -3,16 +3,19 @@ const express = require('express');
 const router = express.Router();
 const recordService = require('./record.service');
 const userService = require('../users/user.service');
+const winston = require('winston');
 
 // routes
 router.get('/all/:username', getRecordByUserName);
 router.post('/store', storeRecords);
 router.delete('/delete-records/:username', deleteRecords);
 
-
 module.exports = router;
 
 function getRecordByUserName(req, res, next) {
+    //  this comes unwrapped from the JWT token
+    let { username } = req.user;
+    winston.info("Request to access records of " + req.params.username + " by " + username);
     recordService.getRecordByUserName(req.params.username)
         .then(records => res.json(records))
         .catch(err => next(err));

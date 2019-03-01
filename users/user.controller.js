@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const userService = require('./user.service');
+const winston = require('winston');
 
 // routes
 // public route available to the internet !!!
@@ -18,6 +19,7 @@ router.delete('/:username', deleteUser);
 module.exports = router;
 
 function authenticate(req, res, next) {
+    winston.info("login attempt by username - " + req.body.username);
     userService.authenticate(req.body)
         .then(user => user ? res.json(user) : res.status(400).json({ message: 'Username or password is incorrect' }))
         .catch(err => next(err));
@@ -34,6 +36,8 @@ function getAllResidentNames(req, res, next) {
 
     //  this comes unwrapped from the JWT token
     let { username, accessType, accessList } = req.user;
+
+    winston.info("request for all resident names by username - " + username);
 
     userService.getAllResidentNames()
         .then(users => {
