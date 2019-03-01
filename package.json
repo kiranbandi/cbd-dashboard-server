@@ -4,8 +4,8 @@
     "description": "NodeJS Rest API backend for EM CBD Dashboard UI",
     "main": "app.js",
     "scripts": {
-        "start": "nodemon --inspect app.js",
-        "prod": "node app.js"
+        "start": "cross-env NODE_ENV=development nodemon --inspect app.js",
+        "prod": "cross-env NODE_ENV=production node app.js "
     },
     "keywords": [
         "node",
@@ -34,6 +34,7 @@
         "winston": "^3.0.0"
     },
     "devDependencies": {
+        "cross-env": "^5.2.0",
         "nodemon": "^1.18.3"
     }
 }

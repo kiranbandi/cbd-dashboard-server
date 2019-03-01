@@ -31,10 +31,16 @@ const options = {
     key: fs.readFileSync('./key/privkey.pem')
 }
 
-// Server for production site
-https.createServer(options, app).listen(8081, function() { winston.debug("Server Live on Port 8081") })
-    // Server for local access during development and testing
-    // app.listen(8081, () => { winston.debug("Server Live on Port 8081") });
+switch (process.env.NODE_ENV) {
+    case 'production':
+        // Server for production site
+        https.createServer(options, app).listen(8081, function() { winston.debug("Server Live on Port 8081") });
+        break;
+    default:
+        // Server for local access during development and testing
+        app.listen(8081, () => { winston.debug("Server Live on Port 8081") });
+        break;
+}
 
 // use JWT auth to secure the api
 app.use(jwt());
