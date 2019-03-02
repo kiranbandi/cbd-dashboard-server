@@ -4,11 +4,16 @@ const Record = db.Record;
 module.exports = {
     getRecordByUserName,
     createMultiple,
-    deleteRecords
+    deleteRecords,
+    getAllRecords
 };
 
 async function getRecordByUserName(username) {
     return await Record.find({ username });
+}
+
+async function getAllRecords(username) {
+    return await Record.find({});
 }
 
 async function createMultiple(recordsList) {

@@ -9,6 +9,7 @@ const winston = require('winston');
 router.get('/all/:username', getRecordByUserName);
 router.post('/store', storeRecords);
 router.delete('/delete-records/:username', deleteRecords);
+router.get('/data-dump', getAllRecords);
 
 module.exports = router;
 
@@ -19,6 +20,22 @@ function getRecordByUserName(req, res, next) {
     recordService.getRecordByUserName(req.params.username)
         .then(records => res.json(records))
         .catch(err => next(err));
+}
+
+function getAllRecords(req, res, next) {
+    //  this comes unwrapped from the JWT token
+    let { username, accessType } = req.user;
+
+    winston.info("Request for data dump by " + username);
+
+    if (accessType == 'admin' || accessType == 'reviewer') {
+        recordService.getAllRecords()
+            .then(records => res.json(records))
+            .catch(err => next(err));
+    } else {
+        res.status(401).json({ message: 'Unauthorized Access' });
+    }
+
 }
 
 function storeRecords(req, res, next) {
