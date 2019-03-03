@@ -14,7 +14,8 @@ const schema = new Schema({
     uploadedData: { type: Date, default: Date.now },
     currentPhase: { type: String },
     programStartDate: { type: Date, default: Date.now },
-    rotationSchedule: { type: String }
+    rotationSchedule: { type: String },
+    longitudinalSchedule: { type: String }
 });
 
 schema.set('toJSON', { virtuals: true });
