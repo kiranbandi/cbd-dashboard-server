@@ -16,7 +16,7 @@ module.exports = router;
 function getRecordByUserName(req, res, next) {
     //  this comes unwrapped from the JWT token
     let { username } = req.user;
-    winston.info("Request to access records of " + req.params.username + " by " + username);
+    winston.info(username + " -- " + "Request to access records of " + req.params.username);
     recordService.getRecordByUserName(req.params.username)
         .then(records => res.json(records))
         .catch(err => next(err));
@@ -25,8 +25,7 @@ function getRecordByUserName(req, res, next) {
 function getAllRecords(req, res, next) {
     //  this comes unwrapped from the JWT token
     let { username, accessType } = req.user;
-
-    winston.info("Request for data dump by " + username);
+    winston.info(username + " -- " + "Request for Data Dump");
 
     if (accessType == 'admin' || accessType == 'reviewer') {
         recordService.getAllRecords()
@@ -35,7 +34,6 @@ function getAllRecords(req, res, next) {
     } else {
         res.status(401).json({ message: 'Unauthorized Access' });
     }
-
 }
 
 function storeRecords(req, res, next) {
@@ -43,6 +41,9 @@ function storeRecords(req, res, next) {
     // to do this we first delete all records for the given username
     // and then store the new upload date into the user table 
     // and then finally write the records
+    let { username } = req.user;
+    winston.info(username + " -- " + "Request to store records for " + req.body.username);
+
     recordService
         .deleteRecords(req.body.username)
         .then(() => userService.update(req.body.username, { uploadedData: moment().format('MM/DD/YYYY') }))

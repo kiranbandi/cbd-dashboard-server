@@ -19,7 +19,10 @@ router.delete('/:username', deleteUser);
 module.exports = router;
 
 function authenticate(req, res, next) {
-    winston.info("login attempt by username - " + req.body.username);
+
+    let { username } = req.user;
+    winston.info(username + " -- " + "login attempt");
+
     userService.authenticate(req.body)
         .then(user => user ? res.json(user) : res.status(400).json({ message: 'Username or password is incorrect' }))
         .catch(err => next(err));
@@ -36,8 +39,7 @@ function getAllResidentNames(req, res, next) {
 
     //  this comes unwrapped from the JWT token
     let { username, accessType, accessList } = req.user;
-
-    winston.info("request for all resident names by username - " + username);
+    winston.info(username + " -- " + "request for all resident names by username - " + username);
 
     userService.getAllResidentNames()
         .then(users => {
