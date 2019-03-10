@@ -20,8 +20,7 @@ module.exports = router;
 
 function authenticate(req, res, next) {
 
-    let { username } = req.user;
-    winston.info(username + " -- " + "login attempt");
+    winston.info(req.body.username + " -- " + "login attempt");
 
     userService.authenticate(req.body)
         .then(user => user ? res.json(user) : res.status(400).json({ message: 'Username or password is incorrect' }))
