@@ -12,7 +12,8 @@ const schema = new Schema({
     rating: { type: String, required: true },
     resident_name: { type: String, required: true },
     situation_context: { type: String, required: false },
-    type: { type: String, required: false }
+    type: { type: String, required: false },
+    isExpired: { type: Boolean }
 });
 
 schema.set('toJSON', { virtuals: true });
