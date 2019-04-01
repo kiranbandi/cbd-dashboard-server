@@ -5,7 +5,9 @@ module.exports = {
     getRecordByUserName,
     createMultiple,
     deleteRecords,
-    getAllRecords
+    getAllRecords,
+    getAllObserversList,
+    getRecordsByObserverName
 };
 
 async function getRecordByUserName(username) {
@@ -22,4 +24,12 @@ async function createMultiple(recordsList) {
 
 async function deleteRecords(username) {
     return await Record.remove({ username });
+}
+
+async function getAllObserversList() {
+    return await Record.distinct('observer_name');
+}
+
+async function getRecordsByObserverName(observer_name) {
+    return await Record.find({ observer_name });
 }

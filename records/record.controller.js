@@ -7,6 +7,8 @@ const winston = require('winston');
 
 // routes
 router.get('/all/:username', getRecordByUserName);
+router.get('/all-observers', getAllObservers);
+router.get('/observer/:observername', getRecordsByObserverName);
 router.post('/store', storeRecords);
 router.delete('/delete-records/:username', deleteRecords);
 router.get('/data-dump', getAllRecords);
@@ -19,6 +21,24 @@ function getRecordByUserName(req, res, next) {
     winston.info(username + " -- " + "Request to access records of " + req.params.username);
     recordService.getRecordByUserName(req.params.username)
         .then(records => res.json(records))
+        .catch(err => next(err));
+}
+
+function getRecordsByObserverName(req, res, next) {
+    //  this comes unwrapped from the JWT token
+    let { username } = req.user;
+    winston.info(username + " -- " + "Request to access records of observer with name " + req.params.observername);
+    recordService.getRecordsByObserverName(req.params.observername)
+        .then(records => res.json(records))
+        .catch(err => next(err));
+}
+
+function getAllObservers(req, res, next) {
+    //  this comes unwrapped from the JWT token
+    let { username } = req.user;
+    winston.info(username + " -- " + "Request to access list of all observers ");
+    recordService.getAllObserversList()
+        .then(list => res.json(list))
         .catch(err => next(err));
 }
 
