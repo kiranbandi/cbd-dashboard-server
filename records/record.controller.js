@@ -8,7 +8,7 @@ const winston = require('winston');
 // routes
 router.get('/all/:username', getRecordByUserName);
 router.get('/all-observers', getAllObservers);
-router.get('/observer/:observername', getRecordsByObserverName);
+router.post('/observer', getRecordsByObserverName);
 router.post('/store', storeRecords);
 router.delete('/delete-records/:username', deleteRecords);
 router.get('/data-dump', getAllRecords);
@@ -28,7 +28,7 @@ function getRecordsByObserverName(req, res, next) {
     //  this comes unwrapped from the JWT token
     let { username } = req.user;
     winston.info(username + " -- " + "Request to access records of observer with name " + req.params.observername);
-    recordService.getRecordsByObserverName(req.params.observername)
+    recordService.getRecordsByObserverName(req.body.observername)
         .then(records => res.json(records))
         .catch(err => next(err));
 }
