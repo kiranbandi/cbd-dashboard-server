@@ -15,7 +15,8 @@ const schema = new Schema({
     currentPhase: { type: String },
     programStartDate: { type: Date, default: Date.now },
     rotationSchedule: { type: String },
-    longitudinalSchedule: { type: String }
+    longitudinalSchedule: { type: String },
+    citeExamScore: { type: String }
 });
 
 schema.set('toJSON', { virtuals: true });
