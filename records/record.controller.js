@@ -27,7 +27,7 @@ function getRecordByUserName(req, res, next) {
 function getRecordsByObserverName(req, res, next) {
     //  this comes unwrapped from the JWT token
     let { username } = req.user;
-    winston.info(username + " -- " + "Request to access records of observer with name " + req.params.observername);
+    winston.info(username + " -- " + "Request to access records of observer with name " + req.body.observername);
     recordService.getRecordsByObserverName(req.body.observername)
         .then(records => res.json(records))
         .catch(err => next(err));
