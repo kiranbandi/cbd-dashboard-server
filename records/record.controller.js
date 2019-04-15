@@ -47,7 +47,7 @@ function getAllRecords(req, res, next) {
     let { username, accessType } = req.user;
     winston.info(username + " -- " + "Request for Data Dump");
 
-    if (accessType == 'admin' || accessType == 'reviewer') {
+    if (accessType == 'admin' || accessType == 'director') {
         recordService.getAllRecords()
             .then(records => res.json(records))
             .catch(err => next(err));

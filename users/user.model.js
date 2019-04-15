@@ -7,7 +7,8 @@ const schema = new Schema({
     fullname: { type: String, required: true },
     // the password is stored as a hash 
     hash: { type: String, required: true },
-    // accessType can be admin, resident, supervisor
+    // accessType can be admin, resident, supervisor ,
+    //  Reviewer (CC Member) or Program Director
     accessType: { type: String, required: true },
     accessList: { type: String, required: false },
     createdDate: { type: Date, default: Date.now },
