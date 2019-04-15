@@ -51,5 +51,5 @@ async function getAllObserversList() {
 }
 
 async function getRecordsByObserverName(observer_name) {
-    return await Record.find({ observer_name });
+    return await Record.find({ observer_name: new RegExp('^' + observer_name + '$/i') });
 }
