@@ -11,7 +11,6 @@ router.get('/residents', getAllResidentNames);
 // private routes available only to admin
 router.post('/register', register);
 router.post('/update/:username', update);
-
 router.get('/all', getAllNames);
 router.get('/:username', getByUsername);
 router.delete('/:username', deleteUser);
@@ -19,9 +18,7 @@ router.delete('/:username', deleteUser);
 module.exports = router;
 
 function authenticate(req, res, next) {
-
     winston.info(req.body.username + " -- " + "login attempt");
-
     userService.authenticate(req.body)
         .then(user => user ? res.json(user) : res.status(400).json({ message: 'Username or password is incorrect' }))
         .catch(err => next(err));

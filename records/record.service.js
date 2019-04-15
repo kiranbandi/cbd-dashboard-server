@@ -31,5 +31,26 @@ async function getAllObserversList() {
 }
 
 async function getRecordsByObserverName(observer_name) {
-    return await Record.find({ observer_name });
+
+    // Get all distinct observers and their aggregates 
+    return await Record.aggregate([{
+            "$group": {
+                "_id": { "$toLower": "$observer_name" },
+                "count": { "$sum": 1 }
+            }
+        },
+        {
+            "$group": {
+                "_id": null,
+                "counts": {
+                    "$push": { "k": "$_id", "v": "$count" }
+                }
+            }
+        },
+        {
+            "$replaceRoot": {
+                "newRoot": { "$arrayToObject": "$counts" }
+            }
+        }
+    ]);
 }
