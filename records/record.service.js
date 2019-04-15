@@ -27,13 +27,8 @@ async function deleteRecords(username) {
 }
 
 async function getAllObserversList() {
-    return await Record.distinct('observer_name');
-}
-
-async function getRecordsByObserverName(observer_name) {
-
-    // Get all distinct observers and their aggregates 
-    return await Record.aggregate([{
+    // get observers and aggregate them by count
+    return Record.aggregate([{
             "$group": {
                 "_id": { "$toLower": "$observer_name" },
                 "count": { "$sum": 1 }
@@ -53,4 +48,8 @@ async function getRecordsByObserverName(observer_name) {
             }
         }
     ]);
+}
+
+async function getRecordsByObserverName(observer_name) {
+    return await Record.find({ observer_name });
 }
