@@ -15,9 +15,11 @@ module.exports = {
     deleteUser
 };
 
-async function authenticate({ username, password }) {
+async function authenticate(username) {
+
     const user = await User.findOne({ username });
-    if (user && bcrypt.compareSync(password, user.hash)) {
+
+    if (user) {
         // return a signed token once authentication is complete
         const { accessType, accessList = '', ...others } = user.toObject();
         // token has the username his accessType and the list of residents he can access
@@ -26,9 +28,13 @@ async function authenticate({ username, password }) {
             username,
             accessType,
             accessList,
-            token
+            token,
+            isRegistered: true
         };
     }
+    return {
+        isRegistered: false
+    };
 }
 
 // show users who have accessType set to residents 

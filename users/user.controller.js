@@ -3,6 +3,8 @@ const router = express.Router();
 const userService = require('./user.service');
 const winston = require('winston');
 
+const validateTicket = require('../helpers/validateTicket');
+
 // routes
 // public route available to the internet !!!
 router.post('/authenticate', authenticate);
@@ -18,9 +20,10 @@ router.delete('/:username', deleteUser);
 module.exports = router;
 
 function authenticate(req, res, next) {
-    winston.info(req.body.username + " -- " + "login attempt");
-    userService.authenticate(req.body)
-        .then(user => user ? res.json(user) : res.status(400).json({ message: 'Username or password is incorrect' }))
+    validateTicket(req.body)
+        .catch((err) => res.status(400).json({ message: err }))
+        .then((nsid) => userService.authenticate(nsid))
+        .then((user) => res.json(user))
         .catch(err => next(err));
 }
 
