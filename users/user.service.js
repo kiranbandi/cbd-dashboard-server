@@ -1,6 +1,5 @@
 const config = require('../config');
 const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
 const db = require('../helpers/db');
 const recordService = require('../records/record.service');
 const User = db.User;
@@ -54,8 +53,6 @@ async function getByUsername(username) {
 
 // register a user in the database
 async function create(userParam) {
-    // hash password
-    userParam.hash = bcrypt.hashSync(userParam.password, 10);
     // create a new user
     const user = new User(userParam);
     // save user
@@ -67,10 +64,6 @@ async function update(username, userParam) {
     let user = await User.findOne({ username });
     // validate
     if (!user) throw Error('User not found');
-    // hash password if it was entered
-    if (userParam.password && userParam.password.length > 0) {
-        userParam.hash = bcrypt.hashSync(userParam.password, 10);
-    }
     // copy userParam properties to user
     user = Object.assign(user, userParam);
     await user.save();

@@ -25,15 +25,14 @@ app.use(function(req, res, next) {
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: false }));
 app.use(bodyParser.json({ limit: '50mb' }));
 
-// Link keys that will be required for HTTPS access
-const options = {
-    cert: fs.readFileSync('./key/fullchain.pem'),
-    key: fs.readFileSync('./key/privkey.pem')
-}
-
 switch (process.env.NODE_ENV) {
     case 'production':
-        // Server for production site
+        // Link keys that will be required for HTTPS access
+        const options = {
+                cert: fs.readFileSync('./key/fullchain.pem'),
+                key: fs.readFileSync('./key/privkey.pem')
+            }
+            // Server for production site
         https.createServer(options, app).listen(8081, function() { winston.debug("Server Live on Port 8081") });
         break;
     default:
@@ -45,7 +44,7 @@ switch (process.env.NODE_ENV) {
 // use JWT auth to secure the api
 app.use(jwt());
 
-// api routes for authentication and user related APIs
+// // api routes for authentication and user related APIs
 app.use('/users', require('./users/user.controller'));
 
 // api routes for record and data fetching APIs
