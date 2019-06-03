@@ -22,8 +22,16 @@ async function createMultiple(recordsList) {
     return await Record.collection.insert(recordsList);
 }
 
-async function deleteRecords(username) {
-    return await Record.remove({ username });
+async function deleteRecords(username, year_tag = 'all') {
+
+    //  if year tag is all then delete everything
+    if (year_tag == 'all') {
+        return await Record.remove({ username });
+    }
+    // if not selectively delete records that match the given year tag 
+    else {
+        return await Record.remove({ username, year_tag });
+    }
 }
 
 async function getAllObserversList() {

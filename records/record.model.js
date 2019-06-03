@@ -3,13 +3,14 @@ const Schema = mongoose.Schema;
 
 const schema = new Schema({
     username: { type: String, required: true },
-    observation_date: { type: String },
+    observation_date: { type: String, required: true },
+    year_tag: { type: String, required: true },
     epa: { type: String, required: true },
     feedback: { type: String, required: false },
     observer_name: { type: String, required: true },
     observer_type: { type: String, required: false },
     professionalism_safety: { type: String, required: false },
-    rating: { type: String, required: true },
+    rating: { type: String },
     resident_name: { type: String, required: true },
     situation_context: { type: String, required: false },
     type: { type: String, required: false },

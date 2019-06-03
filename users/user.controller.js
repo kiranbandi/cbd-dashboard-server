@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const userService = require('./user.service');
 const winston = require('winston');
-
 const validateTicket = require('../helpers/validateTicket');
 
 // routes

@@ -61,19 +61,20 @@ function storeRecords(req, res, next) {
     // to do this we first delete all records for the given username
     // and then store the new upload date into the user table 
     // and then finally write the records
-    let { username } = req.user;
-    winston.info(username + " -- " + "Request to store records for " + req.body.username);
+    let { username, yearTag, recordsList } = req.body;
+    winston.info(req.user.username + " -- " + "Request to store records for " + req.body.username);
+
 
     recordService
-        .deleteRecords(req.body.username)
-        .then(() => userService.update(req.body.username, { uploadedData: moment().format('MM/DD/YYYY') }))
-        .then(() => recordService.createMultiple(req.body.recordsList))
+        .deleteRecords(username, yearTag)
+        .then(() => userService.update(username, { uploadedData: moment().format('MM/DD/YYYY') }))
+        .then(() => recordService.createMultiple(recordsList))
         .then(response => res.json(response))
         .catch(err => next(err));
 }
 
 function deleteRecords(req, res, next) {
-    recordService.deleteRecords(req.params.username)
+    recordService.deleteRecords(req.params.username, 'all')
         .then(() => res.json({}))
         .catch(err => next(err));
 }
