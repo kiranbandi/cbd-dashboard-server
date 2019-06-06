@@ -14,7 +14,9 @@ const schema = new Schema({
     resident_name: { type: String, required: true },
     situation_context: { type: String, required: false },
     type: { type: String, required: false },
-    isExpired: { type: Boolean }
+    isExpired: { type: Boolean },
+    phaseTag: { type: String },
+    rotationTag: { type: String }
 });
 
 schema.set('toJSON', { virtuals: true });
