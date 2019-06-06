@@ -7,7 +7,7 @@ const User = db.User;
 module.exports = {
     authenticate,
     getAllResidentNames,
-    getAllNames,
+    getAllUsers,
     create,
     getByUsername,
     update,
@@ -42,8 +42,8 @@ async function getAllResidentNames() {
 }
 
 // show all users
-async function getAllNames() {
-    return await User.find({}, "username");
+async function getAllUsers() {
+    return await User.find({}, "username accessType fullname");
 }
 
 // show data for a particular user

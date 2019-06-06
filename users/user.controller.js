@@ -12,7 +12,7 @@ router.get('/residents', getAllResidentNames);
 // private routes available only to admin
 router.post('/register', register);
 router.post('/update/:username', update);
-router.get('/all', getAllNames);
+router.get('/all', getAllUsers);
 router.get('/:username', getByUsername);
 router.delete('/:username', deleteUser);
 
@@ -54,8 +54,8 @@ function getAllResidentNames(req, res, next) {
         .catch(err => next(err));
 }
 
-function getAllNames(req, res, next) {
-    userService.getAllNames()
+function getAllUsers(req, res, next) {
+    userService.getAllUsers()
         .then(users => res.json(users))
         .catch(err => next(err));
 }

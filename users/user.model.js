@@ -12,10 +12,11 @@ const schema = new Schema({
     createdDate: { type: Date, default: Date.now },
     uploadedData: { type: Date, default: Date.now },
     currentPhase: { type: String },
+    promotedDate: { type: Array },
     programStartDate: { type: Date, default: Date.now },
-    rotationSchedule: { type: String },
-    longitudinalSchedule: { type: String },
-    citeExamScore: { type: String }
+    rotationSchedule: { type: Object },
+    longitudinalSchedule: { type: Object },
+    citeExamScore: { type: Object }
 });
 
 schema.set('toJSON', { virtuals: true });
