@@ -25,30 +25,17 @@ app.use(function(req, res, next) {
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: false }));
 app.use(bodyParser.json({ limit: '50mb' }));
 
-switch (process.env.NODE_ENV) {
-    case 'production':
-        // Link keys that will be required for HTTPS access
-        const options = {
-                cert: fs.readFileSync('./key/fullchain.pem'),
-                key: fs.readFileSync('./key/privkey.pem')
-            }
-            // Server for production site
-        https.createServer(options, app).listen(8081, function() { winston.debug("Server Live on Port 8081") });
-        break;
-    default:
-        // Server for local access during development and testing
-        app.listen(8081, () => { winston.debug("Server Live on Port 8081") });
-        break;
-}
+// Start the Server
+app.listen(8081, () => { winston.debug("Server Live on Port 8081") });
 
 // use JWT auth to secure the api
 app.use(jwt());
 
 // // api routes for authentication and user related APIs
-app.use('/users', require('./users/user.controller'));
+app.use('/api/users', require('./users/user.controller'));
 
 // api routes for record and data fetching APIs
-app.use('/records', require('./records/record.controller'));
+app.use('/api/records', require('./records/record.controller'));
 
 // global error handler
 app.use(errorHandler);
