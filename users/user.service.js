@@ -38,7 +38,7 @@ async function authenticate(username) {
 
 // show users who have accessType set to residents 
 async function getAllResidentNames() {
-    return await User.find({ accessType: 'resident', isGraduated: false },
+    return await User.find({ accessType: 'resident' },
         "username fullname uploadedData currentPhase programStartDate rotationSchedule longitudinalSchedule citeExamScore promotedDate");
 }
 
