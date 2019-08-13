@@ -19,18 +19,18 @@ async function getAllRecords(username) {
 }
 
 async function createMultiple(recordsList) {
-    return await Record.collection.insert(recordsList);
+    return await Record.collection.insertMany(recordsList);
 }
 
 async function deleteRecords(username, year_tag = 'all') {
 
     //  if year tag is all then delete everything
     if (year_tag == 'all') {
-        return await Record.remove({ username });
+        return await Record.deleteMany({ username });
     }
     // if not selectively delete records that match the given year tag 
     else {
-        return await Record.remove({ username, year_tag });
+        return await Record.deleteMany({ username, year_tag });
     }
 }
 

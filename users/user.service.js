@@ -79,5 +79,5 @@ async function deleteUser(username) {
         // then delete all the resident narratives against the given username
     await narrativeService.deleteNarratives(username)
         // then delete the actual user record
-    await User.findOne({ username }).remove();
+    await User.deleteOne({ username });
 }

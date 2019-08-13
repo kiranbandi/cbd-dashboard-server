@@ -12,18 +12,18 @@ async function getNarrativesByUserName(username) {
 }
 
 
-async function createMultiple(narrativeList) {
-    return await Narrative.collection.insert(narrativeList);
+async function createMultiple(narrativesList) {
+    return await Narrative.collection.insertMany(narrativesList);
 }
 
 
 async function deleteNarratives(username, year_tag = 'all') {
     //  if year tag is all then delete everything
     if (year_tag == 'all') {
-        return await Narrative.remove({ username });
+        return await Narrative.deleteMany({ username });
     }
     // if not selectively delete narratives that match the given year tag 
     else {
-        return await Narrative.remove({ username, year_tag });
+        return await Narrative.deleteMany({ username, year_tag });
     }
 }

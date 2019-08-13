@@ -19,10 +19,10 @@ function storeNarratives(req, res, next) {
     // When data for a user is stored we need to over write the data
     // to do this we first delete all narratives for the given username
     // and then finally write the narratives
-    let { username, yearTag, narrativeList } = req.body;
+    let { username, yearTag, narrativesList } = req.body;
     narrativeService
         .deleteNarratives(username, yearTag)
-        .then(() => narrativeService.createMultiple(narrativeList))
+        .then(() => narrativeService.createMultiple(narrativesList))
         .then(response => res.json(response))
         .catch(err => next(err));
 }
