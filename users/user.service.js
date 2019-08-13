@@ -2,6 +2,8 @@ const config = require('../config');
 const jwt = require('jsonwebtoken');
 const db = require('../helpers/db');
 const recordService = require('../records/record.service');
+const narrativeService = require('../narratives/narrative.service');
+
 const User = db.User;
 
 module.exports = {
@@ -74,6 +76,8 @@ async function update(username, userParam) {
 async function deleteUser(username) {
     // first delete all the resident records against the given username
     await recordService.deleteRecords(username)
+        // then delete all the resident narratives against the given username
+    await narrativeService.deleteNarratives(username)
         // then delete the actual user record
     await User.findOne({ username }).remove();
 }
