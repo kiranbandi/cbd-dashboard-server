@@ -20,7 +20,7 @@ async function authenticate(username) {
 
     if (user) {
         // return a signed token once authentication is complete
-        const { accessType, accessList = '', ...others } = user.toObject();
+        const { accessType, accessList = '' } = user.toObject();
         // token has the username his accessType and the list of residents he can access
         const token = jwt.sign({ username, accessType, accessList }, config.key);
         return {
@@ -38,7 +38,8 @@ async function authenticate(username) {
 
 // show users who have accessType set to residents 
 async function getAllResidentNames() {
-    return await User.find({ accessType: 'resident' }, "username fullname uploadedData currentPhase programStartDate rotationSchedule longitudinalSchedule citeExamScore promotedDate");
+    return await User.find({ accessType: 'resident', isGraduated: false },
+        "username fullname uploadedData currentPhase programStartDate rotationSchedule longitudinalSchedule citeExamScore promotedDate");
 }
 
 // show all users

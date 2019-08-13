@@ -16,7 +16,10 @@ const schema = new Schema({
     programStartDate: { type: Date, default: Date.now },
     rotationSchedule: { type: Object },
     longitudinalSchedule: { type: Object },
-    citeExamScore: { type: Object }
+    citeExamScore: { type: Object },
+    oralExamScore: { type: Object },
+    // flag to indicate when a user has moved out or graduated from the program
+    isGraduated: { type: Boolean }
 });
 
 schema.set('toJSON', { virtuals: true });
