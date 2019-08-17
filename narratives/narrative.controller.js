@@ -10,7 +10,8 @@ module.exports = router;
 
 function getNarrativesByUserName(req, res, next) {
     //  this comes unwrapped from the JWT token
-    narrativeService.getNarrativesByUserName(req.params.username)
+    let { program } = req.user;
+    narrativeService.getNarrativesByUserName(req.params.username, program)
         .then(narratives => res.json(narratives))
         .catch(err => next(err));
 }
