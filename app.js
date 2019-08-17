@@ -1,11 +1,10 @@
 const express = require('express');
-const fs = require('fs');
-const https = require('https');
 var morgan = require('morgan');
 var winston = require('./helpers/winston');
 var jwt = require('./helpers/jwt');
 const bodyParser = require('body-parser');
 const errorHandler = require('./helpers/errorHandler');
+const config = require('./config');
 
 // Initialise the express app
 var app = express();
@@ -15,7 +14,9 @@ app.use(morgan('combined', { stream: winston.stream }));
 
 // Setting response headers to be used for all API endpoints
 app.use(function(req, res, next) {
-    res.setHeader('Access-Control-Allow-Origin', '*');
+    if (config.origins.indexOf(req.headers.origin) > -1) {
+        res.setHeader('Access-Control-Allow-Origin', req.headers.origin);
+    }
     res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS,DELETE');
     res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type, authorization');
     next();
