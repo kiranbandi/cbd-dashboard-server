@@ -63,7 +63,6 @@ function storeRecords(req, res, next) {
     let { username, yearTag, recordsList } = req.body;
     winston.info(req.user.username + " -- " + "Request to store records for " + req.body.username);
 
-
     recordService
         .deleteRecords(username, yearTag)
         .then(() => userService.update(username, { uploadedData: moment().format('MM/DD/YYYY') }))

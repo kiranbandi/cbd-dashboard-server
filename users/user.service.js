@@ -21,7 +21,7 @@ async function authenticate(username) {
     const user = await User.findOne({ username });
     // If a user doesnt exist ask him to get registered
     if (!user) throw Error(("Sorry but we don't have your information on record.Please use the Contact Us below to get in touch with us so we can onboard you."));
-    // return a signed token once authentication is complete
+    // return a signed token once authentication is complete and user is in our database
     const { accessType, accessList = '', program } = user.toObject();
     // if a person has no program mapped to him them throw an error
     if (!program) throw Error("Sorry but you are not mapped to any department.Please use the Contact Us below to get in touch with us so we rectify this issue.");
@@ -42,7 +42,7 @@ async function reIssueToken(username, program) {
     if (!user) throw Error("Sorry but we don't have your information on record.");
     // return a signed token once authentication is complete
     const { accessType, accessList } = user.toObject();
-    // token mapped to a different program can be reissued only for superadmins
+    // token mapped to a different program can be reissued only for superadmins in the DB
     if (accessType !== 'super-admin') throw Error("Sorry but you are not authorized to perform this action.");
     // token has the username,accessType , program the user belongs to and the list of residents user can access
     const token = jwt.sign({ username, accessType, accessList, program }, config.key);
