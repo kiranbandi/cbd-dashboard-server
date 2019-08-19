@@ -56,9 +56,10 @@ function getAllResidentNames(req, res, next) {
 
 function register(req, res, next) {
     //  this comes unwrapped from the JWT token
-    let { username } = req.user;
+    let { username, program } = req.user;
     winston.info(username + " -- " + "request to create new user");
-    userService.create(req.body)
+
+    userService.create({...req.body, program })
         // no message to send , if there is no error the UI simply shows that user has been created
         .then(() => res.json({}))
         .catch(err => next(err));

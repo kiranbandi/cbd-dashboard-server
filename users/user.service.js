@@ -50,6 +50,7 @@ async function reIssueToken(username, program) {
         username,
         accessType,
         accessList,
+        program,
         token
     };
 }

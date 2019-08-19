@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const schema = new Schema({
     username: { type: String, unique: true, required: true },
-    // currently can be em or ob-gyn or anesthesia
+    // currently can be EM or OBGYN or ANESTHESIA
     program: { type: String, required: true },
     email: { type: String, required: true },
     fullname: { type: String, required: true },
