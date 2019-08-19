@@ -11,7 +11,7 @@ router.post('/authenticate', authenticate);
 // and if no access type specified error is thrown
 router.get('/residents', getAllResidentNames);
 // routes available only for admins and superadmins
-router.get('/reissuetoken', checkAdmin, reIssueToken);
+router.post('/reissuetoken', checkAdmin, reIssueToken);
 router.post('/register', checkAdmin, register);
 router.post('/update/:username', checkAdmin, update);
 router.get('/all', checkAdmin, getAllUsers);
@@ -102,7 +102,7 @@ function reIssueToken(req, res, next) {
     //  this comes unwrapped from the JWT token
     let { username } = req.user;
     winston.info(username + " -- " + "request to switch programs");
-    userService.reIssueToken(username, req.params.program)
+    userService.reIssueToken(username, req.body.program)
         .then(user => res.json(user))
         .catch(err => next(err));
 }
