@@ -69,7 +69,8 @@ function getAllUsers(req, res, next) {
     //  this comes unwrapped from the JWT token
     let { program } = req.user;
     userService.getAllUsers(program)
-        .then(users => res.json(users))
+        // remove super-admins , they can only be set via direct DB access
+        .then(users => res.json(users.filter((d) => d.accessType != 'super-admin')))
         .catch(err => next(err));
 }
 
