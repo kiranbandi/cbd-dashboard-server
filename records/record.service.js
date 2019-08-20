@@ -10,12 +10,12 @@ module.exports = {
     getRecordsByObserverName
 };
 
-async function getRecordByUserName(username) {
-    return await Record.find({ username });
+async function getRecordByUserName(username, program) {
+    return await Record.find({ username, program });
 }
 
-async function getAllRecords(username) {
-    return await Record.find({});
+async function getAllRecords(program) {
+    return await Record.find({ program });
 }
 
 async function createMultiple(recordsList) {
@@ -34,9 +34,11 @@ async function deleteRecords(username, year_tag = 'all') {
     }
 }
 
-async function getAllObserversList() {
+async function getAllObserversList(program) {
     // get observers and aggregate them by count
-    return Record.aggregate([{
+    return Record.aggregate([
+        { "$match": { "program": program } },
+        {
             "$group": {
                 "_id": { "$toLower": "$observer_name" },
                 "count": { "$sum": 1 }
@@ -58,6 +60,6 @@ async function getAllObserversList() {
     ]);
 }
 
-async function getRecordsByObserverName(observer_name) {
-    return await Record.find({ observer_name: new RegExp('^' + observer_name + '$', 'i') });
+async function getRecordsByObserverName(observer_name, program) {
+    return await Record.find({ program, observer_name: new RegExp('^' + observer_name + '$', 'i') });
 }

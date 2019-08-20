@@ -8,6 +8,7 @@ const User = db.User;
 
 module.exports = {
     authenticate,
+    reIssueToken,
     getAllResidentNames,
     getAllUsers,
     create,
@@ -17,45 +18,68 @@ module.exports = {
 };
 
 async function authenticate(username) {
-
     const user = await User.findOne({ username });
-
-    if (user) {
-        // return a signed token once authentication is complete
-        const { accessType, accessList = '' } = user.toObject();
-        // token has the username his accessType and the list of residents he can access
-        const token = jwt.sign({ username, accessType, accessList }, config.key);
-        return {
-            username,
-            accessType,
-            accessList,
-            token,
-            isRegistered: true
-        };
-    }
+    // If a user doesnt exist ask him to get registered
+    if (!user) throw Error(("Sorry but we don't have your information on record.Please use the Contact Us below to get in touch with us so we can onboard you."));
+    // return a signed token once authentication is complete and user is in our database
+    const { accessType, accessList = '', program } = user.toObject();
+    // if a person has no program mapped to him them throw an error
+    if (!program) throw Error("Sorry but you are not mapped to any department.Please use the Contact Us below to get in touch with us so we rectify this issue.");
+    // token has the username,accessType , program the user belongs to and the list of residents user can access
+    const token = jwt.sign({ username, accessType, accessList, program }, config.key);
     return {
-        isRegistered: false
+        username,
+        accessType,
+        accessList,
+        program,
+        token
     };
 }
 
-// show users who have accessType set to residents 
-async function getAllResidentNames() {
-    return await User.find({ accessType: 'resident' },
+async function reIssueToken(username, program) {
+    const user = await User.findOne({ username });
+    // If a user doesnt exist ask him to get registered
+    if (!user) throw Error("Sorry but we don't have your information on record.");
+    // return a signed token once authentication is complete
+    const { accessType, accessList } = user.toObject();
+    // token mapped to a different program can be reissued only for superadmins in the DB
+    if (accessType !== 'super-admin') throw Error("Sorry but you are not authorized to perform this action.");
+    // token has the username,accessType , program the user belongs to and the list of residents user can access
+    const token = jwt.sign({ username, accessType, accessList, program }, config.key);
+    return {
+        username,
+        accessType,
+        accessList,
+        program,
+        token
+    };
+}
+
+// show all residents in the user's program
+async function getAllResidentNames(program) {
+    return await User.find({ accessType: 'resident', program },
         "username fullname uploadedData currentPhase programStartDate rotationSchedule longitudinalSchedule citeExamScore oralExamScore isGraduated promotedDate");
 }
 
-// show all users
-async function getAllUsers() {
-    return await User.find({}, "username accessType fullname");
+// show all users in the user's program
+async function getAllUsers(program) {
+    return await User.find({ program }, "username accessType fullname");
 }
 
 // show data for a particular user
-async function getByUsername(username) {
-    return await User.findOne({ username });
+async function getByUsername(username, program) {
+    return await User.findOne({ username, program });
 }
 
 // register a user in the database
 async function create(userParam) {
+    // first check if the username is already in use 
+    // if so throw an error if not proceed
+    let existingUser = await User.findOne({ 'username': userParam.username });
+    // check for existing users
+    if (existingUser) throw Error(('Sorry but a profile exists for this NSID already in the ' + existingUser._doc.program.toUpperCase() + " program. Use the Contact Us below if you want this person's acess to be overwritten to your department."));
+    // paranoid check so super admins are not created by breaking API
+    if (userParam.accessType == 'super-admin') throw Error("Unauthorized Action");
     // create a new user
     const user = new User(userParam);
     // save user
@@ -67,6 +91,8 @@ async function update(username, userParam) {
     let user = await User.findOne({ username });
     // validate
     if (!user) throw Error('User not found');
+    // paranoid check so super admins are not created/updated by breaking API
+    if (userParam.accessType == 'super-admin') throw Error("Unauthorized Action");
     // copy userParam properties to user
     user = Object.assign(user, userParam);
     await user.save();

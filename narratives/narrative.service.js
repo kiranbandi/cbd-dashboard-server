@@ -7,8 +7,8 @@ module.exports = {
     deleteNarratives
 };
 
-async function getNarrativesByUserName(username) {
-    return await Narrative.find({ username });
+async function getNarrativesByUserName(username, program) {
+    return await Narrative.find({ username, program });
 }
 
 

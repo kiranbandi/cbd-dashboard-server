@@ -10,7 +10,8 @@ module.exports = router;
 
 function getNarrativesByUserName(req, res, next) {
     //  this comes unwrapped from the JWT token
-    narrativeService.getNarrativesByUserName(req.params.username)
+    let { program } = req.user;
+    narrativeService.getNarrativesByUserName(req.params.username, program)
         .then(narratives => res.json(narratives))
         .catch(err => next(err));
 }
@@ -19,7 +20,11 @@ function storeNarratives(req, res, next) {
     // When data for a user is stored we need to over write the data
     // to do this we first delete all narratives for the given username
     // and then finally write the narratives
-    let { username, yearTag, narrativesList } = req.body;
+    let { username, yearTag, narrativesList } = req.body, { program } = req.user;
+
+    // set the program on all records based on the user program 
+    narrativesList.map((record) => { record.program = program });
+
     narrativeService
         .deleteNarratives(username, yearTag)
         .then(() => narrativeService.createMultiple(narrativesList))

@@ -17,38 +17,37 @@ module.exports = router;
 
 function getRecordByUserName(req, res, next) {
     //  this comes unwrapped from the JWT token
-    let { username } = req.user;
+    let { username, program } = req.user;
     winston.info(username + " -- " + "Request to access records of " + req.params.username);
-    recordService.getRecordByUserName(req.params.username)
+    recordService.getRecordByUserName(req.params.username, program)
         .then(records => res.json(records))
         .catch(err => next(err));
 }
 
 function getRecordsByObserverName(req, res, next) {
     //  this comes unwrapped from the JWT token
-    let { username } = req.user;
+    let { username, program } = req.user;
     winston.info(username + " -- " + "Request to access records of observer with name " + req.body.observername);
-    recordService.getRecordsByObserverName(req.body.observername)
+    recordService.getRecordsByObserverName(req.body.observername, program)
         .then(records => res.json(records))
         .catch(err => next(err));
 }
 
 function getAllObservers(req, res, next) {
     //  this comes unwrapped from the JWT token
-    let { username } = req.user;
+    let { username, program } = req.user;
     winston.info(username + " -- " + "Request to access list of all observers ");
-    recordService.getAllObserversList()
+    recordService.getAllObserversList(program)
         .then(list => res.json(list))
         .catch(err => next(err));
 }
 
 function getAllRecords(req, res, next) {
     //  this comes unwrapped from the JWT token
-    let { username, accessType } = req.user;
+    let { username, accessType, program } = req.user;
     winston.info(username + " -- " + "Request for Data Dump");
-
-    if (accessType == 'admin' || accessType == 'director' || accessType == 'supervisor' || accessType == 'reviewer') {
-        recordService.getAllRecords()
+    if (['admin', 'super-admin', 'director', 'supervisor', 'reviewer'].indexOf(accessType) > -1) {
+        recordService.getAllRecords(program)
             .then(records => res.json(records))
             .catch(err => next(err));
     } else {
@@ -61,8 +60,11 @@ function storeRecords(req, res, next) {
     // to do this we first delete all records for the given username
     // and then store the new upload date into the user table 
     // and then finally write the records
-    let { username, yearTag, recordsList } = req.body;
+    let { username, yearTag, recordsList } = req.body, { program } = req.user;
     winston.info(req.user.username + " -- " + "Request to store records for " + req.body.username);
+
+    // set the program on all records based on the user program 
+    recordsList.map((record) => { record.program = program });
 
 
     recordService

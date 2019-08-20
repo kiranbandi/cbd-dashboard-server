@@ -14,6 +14,7 @@ app.use(morgan('combined', { stream: winston.stream }));
 
 // Setting response headers to be used for all API endpoints
 app.use(function(req, res, next) {
+    // cors header is set only when header is in the list of allowed origins from the config file
     if (config.origins.indexOf(req.headers.origin) > -1) {
         res.setHeader('Access-Control-Allow-Origin', req.headers.origin);
     }
