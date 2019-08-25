@@ -14,6 +14,7 @@ module.exports = {
     create,
     getByUsername,
     update,
+    updateCCFeedbackList,
     deleteUser
 };
 
@@ -58,7 +59,7 @@ async function reIssueToken(username, program) {
 // show all residents in the user's program
 async function getAllResidentNames(program) {
     return await User.find({ accessType: 'resident', program },
-        "username fullname uploadedData currentPhase programStartDate rotationSchedule longitudinalSchedule citeExamScore oralExamScore isGraduated promotedDate");
+        "username fullname uploadedData currentPhase programStartDate rotationSchedule longitudinalSchedule citeExamScore ccFeedbackList oralExamScore isGraduated promotedDate");
 }
 
 // show all users in the user's program
@@ -97,6 +98,18 @@ async function update(username, userParam) {
     user = Object.assign(user, userParam);
     await user.save();
 }
+
+// update a record in the database but username cannot be changed 
+async function updateCCFeedbackList(username, ccFeedbackList) {
+    let user = await User.findOne({ username });
+    // validate
+    if (!user) throw Error('User not found');
+    // copy userParam properties to user
+    user = Object.assign(user, { ccFeedbackList });
+    await user.save();
+}
+
+
 
 // find a record by username and then delete it
 async function deleteUser(username) {

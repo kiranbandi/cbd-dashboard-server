@@ -14,6 +14,7 @@ router.get('/residents', getAllResidentNames);
 router.post('/reissuetoken', checkAdmin, reIssueToken);
 router.post('/register', checkAdmin, register);
 router.post('/update/:username', checkAdmin, update);
+router.post('/update-cc-feedback/:username', checkAdmin, updateCCFeedbackList);
 router.get('/all', checkAdmin, getAllUsers);
 router.get('/:username', checkAdmin, getByUsername);
 router.delete('/:username', checkAdmin, deleteUser);
@@ -76,6 +77,15 @@ function getAllUsers(req, res, next) {
 
 function update(req, res, next) {
     userService.update(req.params.username, req.body)
+        .then(() => res.json({}))
+        .catch(err => next(err));
+}
+
+function updateCCFeedbackList(req, res, next) {
+    //  this comes unwrapped from the JWT token
+    let { username } = req.user;
+    winston.info(username + " -- " + "Adding CC records for username - " + req.params.username);
+    userService.updateCCFeedbackList(req.params.username, req.body.ccFeedbackList)
         .then(() => res.json({}))
         .catch(err => next(err));
 }
