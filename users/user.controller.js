@@ -77,7 +77,7 @@ function getAllUsers(req, res, next) {
 
 function update(req, res, next) {
     userService.update(req.params.username, req.body)
-        .then(() => res.json({}))
+        .then((data) => res.json({ data }))
         .catch(err => next(err));
 }
 
@@ -86,7 +86,7 @@ function updateCCFeedbackList(req, res, next) {
     let { username } = req.user;
     winston.info(username + " -- " + "Adding CC records for username - " + req.params.username);
     userService.updateCCFeedbackList(req.params.username, req.body.ccFeedbackList)
-        .then(() => res.json({}))
+        .then((data) => res.json({ data }))
         .catch(err => next(err));
 }
 
