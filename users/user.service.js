@@ -106,7 +106,7 @@ async function updateCCFeedbackList(username, ccFeedbackList) {
     if (!user) throw Error('User not found');
     // copy userParam properties to user
     user = Object.assign(user, { ccFeedbackList });
-    await user.save();
+    return await user.save();
 }
 
 
