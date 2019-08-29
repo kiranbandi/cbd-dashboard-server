@@ -3,7 +3,7 @@ const axios = require('axios');
 // PAWS Validate URL
 let pawsValidateURL = 'https://cas.usask.ca/cas/serviceValidate',
     serviceURL = 'https://cbd.usask.ca/',
-    devURL = 'https://localhost:8888/';
+    devURL = 'https://localhost:8887/';
 
 
 function validateTicket({ ticket, isDevSite }) {
