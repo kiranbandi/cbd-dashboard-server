@@ -15,6 +15,7 @@ router.post('/reissuetoken', checkAdmin, reIssueToken);
 router.post('/register', checkAdmin, register);
 router.post('/update/:username', checkAdmin, update);
 router.post('/update-cc-feedback/:username', checkAdmin, updateCCFeedbackList);
+router.post('/update-exam-score/:username', checkAdmin, updateExamscore);
 router.get('/all', checkAdmin, getAllUsers);
 router.get('/:username', checkAdmin, getByUsername);
 router.delete('/:username', checkAdmin, deleteUser);
@@ -35,7 +36,7 @@ function authenticate(req, res, next) {
 function getAllResidentNames(req, res, next) {
     //  these come unwrapped from the JWT token
     let { username, accessType, accessList, program } = req.user;
-    winston.info(username + " -- " + "request for resident names by username - " + username);
+    winston.info(username + " -- " + "request for resident names by username");
     userService.getAllResidentNames(program)
         .then(users => {
             if (['admin', 'director', 'super-admin', 'reviewer'].indexOf(accessType) > -1) {
@@ -84,8 +85,17 @@ function update(req, res, next) {
 function updateCCFeedbackList(req, res, next) {
     //  this comes unwrapped from the JWT token
     let { username } = req.user;
-    winston.info(username + " -- " + "Adding CC records for username - " + req.params.username);
+    winston.info(username + " -- " + "Updating CC records for username - " + req.params.username);
     userService.updateCCFeedbackList(req.params.username, req.body.ccFeedbackList)
+        .then((data) => res.json({ data }))
+        .catch(err => next(err));
+}
+
+function updateExamscore(req, res, next) {
+    //  this comes unwrapped from the JWT token
+    let { username } = req.user;
+    winston.info(username + " -- " + "Updating Examscores for username - " + req.params.username);
+    userService.updateExamscore(req.params.username, req.body.oralExamScore, req.body.citeExamScore)
         .then((data) => res.json({ data }))
         .catch(err => next(err));
 }

@@ -15,6 +15,7 @@ module.exports = {
     getByUsername,
     update,
     updateCCFeedbackList,
+    updateExamscore,
     deleteUser
 };
 
@@ -109,7 +110,15 @@ async function updateCCFeedbackList(username, ccFeedbackList) {
     return await user.save();
 }
 
-
+// update a record in the database but username cannot be changed 
+async function updateExamscore(username, oralExamScore, citeExamScore) {
+    let user = await User.findOne({ username });
+    // validate
+    if (!user) throw Error('User not found');
+    // copy userParam properties to user
+    user = Object.assign(user, { oralExamScore, citeExamScore });
+    return await user.save();
+}
 
 // find a record by username and then delete it
 async function deleteUser(username) {
