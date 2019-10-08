@@ -22,7 +22,7 @@ module.exports = {
 async function authenticate(username) {
     const user = await User.findOne({ username });
     // If a user doesnt exist ask him to get registered
-    if (!user) throw Error(("Sorry but we don't have your information on record.Please use the Contact Us below to get in touch with us so we can onboard you."));
+    if (!user) throw Error(("Sorry but we don't have your information on record.Please get in touch with your program administrator to get onboarded.Alternatively you can drop a mail to venkat.bandi@usask.ca for assistance."));
     // return a signed token once authentication is complete and user is in our database
     const { accessType, accessList = '', program } = user.toObject();
     // if a person has no program mapped to him them throw an error
