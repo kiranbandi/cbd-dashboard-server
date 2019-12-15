@@ -34,8 +34,7 @@ function getUGData(req, res, next) {
             res.json({ 'file': csvData });
         })
         .on('error', function(err) {
-            console.log(csvData.length);
-            console.error(err.message);
+            res.status(500).json({ message: 'Error parsing data' });
         })
 }
 
