@@ -1,7 +1,7 @@
 {
     "name": "em-cbd-server",
     "version": "1.0.0",
-    "description": "NodeJS Rest API backend for EM CBD Dashboard UI",
+    "description": "NodeJS Rest API backend for EM CBME Dashboard UI",
     "main": "app.js",
     "scripts": {
         "start": "cross-env NODE_ENV=development nodemon --inspect app.js",
@@ -19,6 +19,7 @@
         "axios": "^0.18.0",
         "bcryptjs": "^2.4.3",
         "body-parser": "^1.18.3",
+        "csv-parse": "^4.8.2",
         "express": "^4.16.3",
         "express-jwt": "^5.3.1",
         "jsonwebtoken": "^8.4.0",

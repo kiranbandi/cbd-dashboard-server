@@ -4,6 +4,9 @@ const router = express.Router();
 const recordService = require('./record.service');
 const userService = require('../users/user.service');
 const winston = require('winston');
+const fs = require('fs');
+const path = require('path');
+var parse = require('csv-parse');
 
 // routes
 router.get('/all/:username', getRecordByUserName);
@@ -12,8 +15,31 @@ router.post('/observer', getRecordsByObserverName);
 router.post('/store', storeRecords);
 router.delete('/delete-records/:username', deleteRecords);
 router.get('/data-dump', getAllRecords);
+router.get('/data-dump-ug', getUGData);
 
 module.exports = router;
+
+
+function getUGData(req, res, next) {
+
+    var csvData = [];
+    fs.createReadStream(path.join(__dirname, '..\\', 'data.csv'))
+        .pipe(parse({ delimiter: ',' }))
+        .on('data', function(csvrow) {
+            //do something with csvrow
+            csvData.push(csvrow);
+        })
+        .on('end', function() {
+            //do something wiht csvData
+            res.json({ 'file': csvData });
+        })
+        .on('error', function(err) {
+            console.log(csvData.length);
+            console.error(err.message);
+        })
+}
+
+
 
 function getRecordByUserName(req, res, next) {
     //  this comes unwrapped from the JWT token

@@ -72,3 +72,6 @@ typings/
 
 # config file
 config.js
+
+# ignore data file
+data.csv
