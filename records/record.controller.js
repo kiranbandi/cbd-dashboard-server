@@ -23,7 +23,7 @@ module.exports = router;
 function getUGData(req, res, next) {
 
     var csvData = [];
-    fs.createReadStream(path.join(__dirname, '..\\', 'data.csv'))
+    fs.createReadStream(path.join(__dirname, '../', 'data.csv'))
         .pipe(parse({ delimiter: ',' }))
         .on('data', function(csvrow) {
             //do something with csvrow
