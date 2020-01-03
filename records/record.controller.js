@@ -91,13 +91,27 @@ function storeRecords(req, res, next) {
     // set the program on all records based on the user program 
     recordsList.map((record) => { record.program = program });
 
+    if (program == 'UNDERGRADUATE' && req.body.username == 'all') {
 
-    recordService
-        .deleteRecords(username, yearTag)
-        .then(() => userService.update(username, { uploadedData: moment().format('MM/DD/YYYY') }))
-        .then(() => recordService.createMultiple(recordsList))
-        .then(response => res.json(response))
-        .catch(err => next(err));
+        recordService
+            .deleteUGRecords('UNDERGRADUATE')
+            .then(() => recordService.createMultiple(recordsList))
+            .then(response => res.json(response))
+            .catch(err => next(err));
+
+    } else {
+
+        recordService
+            .deleteRecords(username, yearTag)
+            .then(() => userService.update(username, { uploadedData: moment().format('MM/DD/YYYY') }))
+            .then(() => recordService.createMultiple(recordsList))
+            .then(response => res.json(response))
+            .catch(err => next(err));
+
+    }
+
+
+
 }
 
 function deleteRecords(req, res, next) {
