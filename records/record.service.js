@@ -5,6 +5,7 @@ module.exports = {
     getRecordByUserName,
     createMultiple,
     deleteRecords,
+    deleteUGRecords,
     getAllRecords,
     getAllObserversList,
     getRecordsByObserverName
@@ -21,6 +22,12 @@ async function getAllRecords(program) {
 async function createMultiple(recordsList) {
     return await Record.collection.insertMany(recordsList);
 }
+
+
+async function deleteUGRecords(program) {
+    return await Record.deleteMany({ program });
+}
+
 
 async function deleteRecords(username, year_tag = 'all') {
 
