@@ -24,8 +24,11 @@ async function createMultiple(recordsList) {
 }
 
 
-async function deleteUGRecords(program) {
-    return await Record.deleteMany({ program });
+async function deleteUGRecords(program, year_tag = '') {
+    // for UG we multiplex the year tag along with the type tag
+    // so we can selectively delete all records from a single cohort that had their data
+    // from the APP or the 145 system or paper based
+    return await Record.deleteMany({ program, year_tag });
 }
 
 
