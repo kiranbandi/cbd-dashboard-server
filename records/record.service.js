@@ -5,7 +5,6 @@ module.exports = {
     getRecordByUserName,
     createMultiple,
     deleteRecords,
-    deleteUGRecords,
     getAllRecords,
     getAllObserversList,
     getRecordsByObserverName
