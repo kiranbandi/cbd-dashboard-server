@@ -5,6 +5,7 @@ module.exports = {
     getRecordByUserName,
     createMultiple,
     deleteRecords,
+    deleteUGRecords,
     getAllRecords,
     getAllObserversList,
     getRecordsByObserverName
@@ -20,6 +21,23 @@ async function getAllRecords(program) {
 
 async function createMultiple(recordsList) {
     return await Record.collection.insertMany(recordsList);
+}
+
+
+async function deleteUGRecords(program, year_tag = 'all') {
+
+    // for UG we multiplex the year tag along with the type tag
+    // so we can selectively delete all records from a single cohort that had their data
+    // from the APP or the 145 system or paper based
+
+    //  if year tag is all then delete everything
+    if (year_tag == 'all') {
+        return await Record.deleteMany({ program });
+    }
+    // if not selectively delete records that match the given year tag 
+    else {
+        return await Record.deleteMany({ program, year_tag });
+    }
 }
 
 

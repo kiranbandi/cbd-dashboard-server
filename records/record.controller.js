@@ -94,7 +94,7 @@ function storeRecords(req, res, next) {
     if (program == 'UNDERGRADUATE' && req.body.username == 'all') {
 
         recordService
-            .deleteRecords('UNDERGRADUATE', yearTag)
+            .deleteUGRecords('UNDERGRADUATE', yearTag)
             .then(() => recordService.createMultiple(recordsList))
             .then(response => res.json(response))
             .catch(err => next(err));
