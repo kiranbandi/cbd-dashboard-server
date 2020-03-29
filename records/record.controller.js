@@ -12,7 +12,7 @@ var parse = require('csv-parse');
 router.get('/all/:username', getRecordByUserName);
 router.get('/all-observers', getAllObservers);
 router.post('/observer', getRecordsByObserverName);
-router.post('/getRecordsByYear', getRecordsByYear);
+router.post('/records-by-year', getRecordsByYear);
 router.post('/store', storeRecords);
 router.delete('/delete-records/:username', deleteRecords);
 router.get('/data-dump', getAllRecords);
