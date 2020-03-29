@@ -7,6 +7,7 @@ module.exports = {
     deleteRecords,
     deleteUGRecords,
     getAllRecords,
+    getRecordsByYear,
     getAllObserversList,
     getRecordsByObserverName
 };
@@ -18,6 +19,19 @@ async function getRecordByUserName(username, program) {
 async function getAllRecords(program) {
     return await Record.find({ program });
 }
+
+async function getRecordsByYear(academicYear, programSpecific = true, program) {
+
+    if (programSpecific) {
+        return await Record.find({ program, 'year_tag': { $in: [academicYear + '-2', (+academicYear + 1) + '-1'] } });
+    }
+    // if the query isnt specific to a program then just return all records matching the academic year
+    else {
+        return await Record.find({ 'year_tag': { $in: [academicYear + '-2', (+academicYear + 1) + '-1'] } });
+    }
+
+}
+
 
 async function createMultiple(recordsList) {
     return await Record.collection.insertMany(recordsList);
