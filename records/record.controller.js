@@ -16,31 +16,9 @@ router.post('/records-by-year', getRecordsByYear);
 router.post('/store', storeRecords);
 router.delete('/delete-records/:username', deleteRecords);
 router.get('/data-dump', getAllRecords);
-router.get('/data-dump-ug', getUGData);
 
 
 module.exports = router;
-
-
-function getUGData(req, res, next) {
-
-    var csvData = [];
-    fs.createReadStream(path.join(__dirname, '../', 'data.csv'))
-        .pipe(parse({ delimiter: ',' }))
-        .on('data', function(csvrow) {
-            //do something with csvrow
-            csvData.push(csvrow);
-        })
-        .on('end', function() {
-            //do something wiht csvData
-            res.json({ 'file': csvData });
-        })
-        .on('error', function(err) {
-            res.status(500).json({ message: 'Error parsing data' });
-        })
-}
-
-
 
 function getRecordByUserName(req, res, next) {
     //  this comes unwrapped from the JWT token
@@ -75,12 +53,10 @@ function getRecordsByYear(req, res, next) {
     let { username, accessType, program } = req.user, { academicYear, programSpecific = true } = req.body;
     winston.info(username + " -- " + program + " -- " + "Request for Data from year " + academicYear);
     if (['admin', 'super-admin', 'director'].indexOf(accessType) > -1) {
-
         // If an admin or director is accessing the data then force set the program 
         if (accessType == 'admin') {
             programSpecific = true;
         }
-
         recordService.getRecordsByYear(academicYear, programSpecific, program)
             .then(records => res.json(records))
             .catch(err => next(err));
@@ -114,7 +90,6 @@ function storeRecords(req, res, next) {
     recordsList.map((record) => { record.program = program });
 
     if (program == 'UNDERGRADUATE' && req.body.username == 'all') {
-
         recordService
             .deleteUGRecords('UNDERGRADUATE', yearTag)
             .then(() => recordService.createMultiple(recordsList))
@@ -122,22 +97,18 @@ function storeRecords(req, res, next) {
             .catch(err => next(err));
 
     } else {
-
         recordService
-            .deleteRecords(username, yearTag)
+            .deleteRecords(username, yearTag, program)
             .then(() => userService.update(username, { uploadedData: moment().format('MM/DD/YYYY') }))
             .then(() => recordService.createMultiple(recordsList))
             .then(response => res.json(response))
             .catch(err => next(err));
-
     }
-
-
-
 }
 
 function deleteRecords(req, res, next) {
-    recordService.deleteRecords(req.params.username, 'all')
+    let { program } = req.user;
+    recordService.deleteRecords(req.params.username, 'all', program)
         .then(() => res.json({}))
         .catch(err => next(err));
 }

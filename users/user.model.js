@@ -1,8 +1,10 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
+// The username and program combined together needed to be unique
+// the same nsid can have different profiles for different programs 
 const schema = new Schema({
-    username: { type: String, unique: true, required: true },
+    username: { type: String, required: true },
     // currently can be EM,OBGYN,ANESTHESIA,PATH or IM
     program: { type: String, required: true },
     email: { type: String, required: true },

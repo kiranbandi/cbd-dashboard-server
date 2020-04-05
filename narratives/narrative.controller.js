@@ -26,14 +26,15 @@ function storeNarratives(req, res, next) {
     narrativesList.map((record) => { record.program = program });
 
     narrativeService
-        .deleteNarratives(username, yearTag)
+        .deleteNarratives(username, yearTag, program)
         .then(() => narrativeService.createMultiple(narrativesList))
         .then(response => res.json(response))
         .catch(err => next(err));
 }
 
 function deleteNarratives(req, res, next) {
-    narrativeService.deleteNarratives(req.params.username, 'all')
+    let { program } = req.user;
+    narrativeService.deleteNarratives(req.params.username, 'all', program)
         .then(() => res.json({}))
         .catch(err => next(err));
 }

@@ -11,7 +11,7 @@ router.post('/authenticate', authenticate);
 // and if no access type specified error is thrown
 router.get('/residents', getAllResidentNames);
 // routes available only for admins and superadmins
-router.post('/reissuetoken', checkAdmin, reIssueToken);
+router.post('/reissuetoken', reIssueToken);
 router.post('/register', checkAdmin, register);
 router.post('/update/:username', checkAdmin, update);
 router.post('/update-cc-feedback/:username', checkAdmin, updateCCFeedbackList);
@@ -36,7 +36,7 @@ function authenticate(req, res, next) {
 function getAllResidentNames(req, res, next) {
     //  these come unwrapped from the JWT token
     let { username, accessType, accessList, program } = req.user;
-    winston.info(username + " -- " + "request for resident names by username");
+    winston.info(username + " -- " + program + " -- " + "Request for list of residents");
     userService.getAllResidentNames(program)
         .then(users => {
             if (['admin', 'director', 'super-admin', 'reviewer'].indexOf(accessType) > -1) {
@@ -59,7 +59,7 @@ function getAllResidentNames(req, res, next) {
 function register(req, res, next) {
     //  this comes unwrapped from the JWT token
     let { username, program } = req.user;
-    winston.info(username + " -- " + "request to create new user");
+    winston.info(username + " -- " + program + " -- " + "Request to create new user");
 
     userService.create({...req.body, program })
         // no message to send , if there is no error the UI simply shows that user has been created
@@ -77,25 +77,27 @@ function getAllUsers(req, res, next) {
 }
 
 function update(req, res, next) {
-    userService.update(req.params.username, req.body)
+    //  this comes unwrapped from the JWT token
+    let { program } = req.user;
+    userService.update(req.params.username, program, req.body)
         .then((data) => res.json({ data }))
         .catch(err => next(err));
 }
 
 function updateCCFeedbackList(req, res, next) {
     //  this comes unwrapped from the JWT token
-    let { username } = req.user;
-    winston.info(username + " -- " + "Updating CC records for username - " + req.params.username);
-    userService.updateCCFeedbackList(req.params.username, req.body.ccFeedbackList)
+    let { username, program } = req.user;
+    winston.info(username + " -- " + program + " -- " + "Updating CC records for username - " + req.params.username);
+    userService.updateCCFeedbackList(req.params.username, program, req.body.ccFeedbackList)
         .then((data) => res.json({ data }))
         .catch(err => next(err));
 }
 
 function updateExamscore(req, res, next) {
     //  this comes unwrapped from the JWT token
-    let { username } = req.user;
-    winston.info(username + " -- " + "Updating Examscores for username - " + req.params.username);
-    userService.updateExamscore(req.params.username, req.body.oralExamScore, req.body.citeExamScore)
+    let { username, program } = req.user;
+    winston.info(username + " -- " + program + " -- " + "Updating Examscores for username - " + req.params.username);
+    userService.updateExamscore(req.params.username, program, req.body.oralExamScore, req.body.citeExamScore)
         .then((data) => res.json({ data }))
         .catch(err => next(err));
 }
@@ -110,9 +112,9 @@ function getByUsername(req, res, next) {
 
 function deleteUser(req, res, next) {
     //  this comes unwrapped from the JWT token
-    let { username } = req.user;
-    winston.info(username + " -- " + "deleting all records for username - " + req.params.username);
-    userService.deleteUser(req.params.username)
+    let { username, program } = req.user;
+    winston.info(username + " -- " + program + " -- " + "Deleting all records for username - " + req.params.username);
+    userService.deleteUser(req.params.username, program)
         .then(() => res.json({}))
         .catch(err => next(err));
 }

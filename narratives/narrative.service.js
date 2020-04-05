@@ -17,13 +17,13 @@ async function createMultiple(narrativesList) {
 }
 
 
-async function deleteNarratives(username, year_tag = 'all') {
+async function deleteNarratives(username, year_tag = 'all', program) {
     //  if year tag is all then delete everything
     if (year_tag == 'all') {
-        return await Narrative.deleteMany({ username });
+        return await Narrative.deleteMany({ username, program });
     }
     // if not selectively delete narratives that match the given year tag 
     else {
-        return await Narrative.deleteMany({ username, year_tag });
+        return await Narrative.deleteMany({ username, year_tag, program });
     }
 }

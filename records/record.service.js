@@ -55,7 +55,7 @@ async function deleteUGRecords(program, year_tag = 'all') {
 }
 
 
-async function deleteRecords(username, year_tag = 'all') {
+async function deleteRecords(username, year_tag = 'all', program) {
 
     // for UG we multiplex the year tag along with the type tag
     // so we can selectively delete all records from a single cohort that had their data
@@ -63,11 +63,11 @@ async function deleteRecords(username, year_tag = 'all') {
 
     //  if year tag is all then delete everything
     if (year_tag == 'all') {
-        return await Record.deleteMany({ username });
+        return await Record.deleteMany({ username, program });
     }
     // if not selectively delete records that match the given year tag 
     else {
-        return await Record.deleteMany({ username, year_tag });
+        return await Record.deleteMany({ username, year_tag, program });
     }
 }
 

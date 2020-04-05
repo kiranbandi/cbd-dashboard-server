@@ -21,42 +21,84 @@ module.exports = {
 };
 
 async function authenticate(username) {
-    const user = await User.findOne({ username });
+    let user = await User.find({ username });
     // If a user doesnt exist ask him to get registered
     winston.info(username + " -- " + "Request to login");
-    if (!user) throw Error(("Sorry but we don't have your information on record.Please get in touch with your program administrator to get onboarded.Alternatively you can drop a mail to venkat.bandi@usask.ca for assistance."));
+    if (!user) throw Error(("Sorry but we don't have your information on record. Please get in touch with your program administrator to get onboarded. Alternatively you can drop a mail to venkat.bandi@usask.ca for assistance."));
+
+    // get the list of programs the user has access to 
+    let programList = [];
+    if (user.length > 0) {
+        programList = user.map((d) => d.program);
+        // set the user list to the first user and 
+        // then pass in the list of programs he has access to
+        user = user[0];
+    }
+
     // return a signed token once authentication is complete and user is in our database
     const { accessType, accessList = '', program } = user.toObject();
     // if a person has no program mapped to him them throw an error
-    if (!program) throw Error("Sorry but you are not mapped to any department.Please use the Contact Us below to get in touch with us so we rectify this issue.");
+    if (!program) throw Error("Sorry but you are not mapped to any department. Please use the Contact Us below to get in touch with us so we can rectify this issue.");
     // token has the username,accessType , program the user belongs to and the list of residents user can access
-    const token = jwt.sign({ username, accessType, accessList, program }, config.key);
+    const token = jwt.sign({ username, accessType, accessList, program, programList }, config.key);
     return {
         username,
         accessType,
         accessList,
         program,
-        token
+        token,
+        programList
     };
 }
 
 async function reIssueToken(username, program) {
-    const user = await User.findOne({ username });
+    let user = await User.find({ username });
+
     // If a user doesnt exist ask him to get registered
     if (!user) throw Error("Sorry but we don't have your information on record.");
+
+    // get the list of programs the user has access to 
+    let programList = [];
+    if (user.length > 0) {
+        programList = user.map((d) => d.program);
+        // set the user list to the first user and 
+        // then pass in the list of programs he has access to
+        user = user[0];
+    }
+
     // return a signed token once authentication is complete
     const { accessType, accessList } = user.toObject();
-    // token mapped to a different program can be reissued only for superadmins in the DB
-    if (accessType !== 'super-admin') throw Error("Sorry but you are not authorized to perform this action.");
-    // token has the username,accessType , program the user belongs to and the list of residents user can access
-    const token = jwt.sign({ username, accessType, accessList, program }, config.key);
-    return {
-        username,
-        accessType,
-        accessList,
-        program,
-        token
-    };
+
+    // if he is a super-admin pass him through
+    // as token mapped to any program can be reissued only for superadmins 
+    if (accessType == 'super-admin') {
+        // token has the username,accessType , program the user belongs to and the list of residents user can access
+        const token = jwt.sign({ username, accessType, accessList, program, programList }, config.key);
+        return {
+            username,
+            accessType,
+            accessList,
+            program,
+            token,
+            programList
+        };
+    }
+    // for other users check if the program the user wants to access is in his program list 
+    // meaning he has a profile mapped for that program
+    else if (programList.indexOf(program) > -1) {
+        // token has the username,accessType , program the user belongs to and the list of residents user can access
+        const token = jwt.sign({ username, accessType, accessList, program, programList }, config.key);
+        return {
+            username,
+            accessType,
+            accessList,
+            program,
+            token,
+            programList
+        };
+    } else {
+        throw Error("Sorry but you are not authorized to perform this action.");
+    }
 }
 
 // show all residents in the user's program
@@ -77,11 +119,11 @@ async function getByUsername(username, program) {
 
 // register a user in the database
 async function create(userParam) {
-    // first check if the username is already in use 
+    // first check if the username is already in use in that program
     // if so throw an error if not proceed
-    let existingUser = await User.findOne({ 'username': userParam.username });
+    let existingUser = await User.findOne({ 'username': userParam.username, 'program': userParam.program });
     // check for existing users
-    if (existingUser) throw Error(('Sorry but a profile exists for this NSID already in the ' + existingUser._doc.program.toUpperCase() + " program. Use the Contact Us below if you want this person's acess to be overwritten to your department."));
+    if (existingUser) throw Error(('Sorry but a profile exists for this NSID already in this program.'));
     // paranoid check so super admins are not created by breaking API
     if (userParam.accessType == 'super-admin') throw Error("Unauthorized Action");
     // create a new user
@@ -91,8 +133,8 @@ async function create(userParam) {
 }
 
 // update a record in the database but username cannot be changed 
-async function update(username, userParam) {
-    let user = await User.findOne({ username });
+async function update(username, program, userParam) {
+    let user = await User.findOne({ username, program });
     // validate
     if (!user) throw Error('User not found');
     // paranoid check so super admins are not created/updated by breaking API
@@ -103,8 +145,8 @@ async function update(username, userParam) {
 }
 
 // update a record in the database but username cannot be changed 
-async function updateCCFeedbackList(username, ccFeedbackList) {
-    let user = await User.findOne({ username });
+async function updateCCFeedbackList(username, program, ccFeedbackList) {
+    let user = await User.findOne({ username, program });
     // validate
     if (!user) throw Error('User not found');
     // copy userParam properties to user
@@ -113,8 +155,8 @@ async function updateCCFeedbackList(username, ccFeedbackList) {
 }
 
 // update a record in the database but username cannot be changed 
-async function updateExamscore(username, oralExamScore, citeExamScore) {
-    let user = await User.findOne({ username });
+async function updateExamscore(username, program, oralExamScore, citeExamScore) {
+    let user = await User.findOne({ username, program });
     // validate
     if (!user) throw Error('User not found');
     // copy userParam properties to user
@@ -123,11 +165,11 @@ async function updateExamscore(username, oralExamScore, citeExamScore) {
 }
 
 // find a record by username and then delete it
-async function deleteUser(username) {
+async function deleteUser(username, program) {
     // first delete all the resident records against the given username
-    await recordService.deleteRecords(username)
+    await recordService.deleteRecords(username, program)
         // then delete all the resident narratives against the given username
-    await narrativeService.deleteNarratives(username)
+    await narrativeService.deleteNarratives(username, program)
         // then delete the actual user record
-    await User.deleteOne({ username });
+    await User.deleteOne({ username, program });
 }
