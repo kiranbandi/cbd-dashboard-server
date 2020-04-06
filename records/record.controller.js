@@ -99,7 +99,7 @@ function storeRecords(req, res, next) {
     } else {
         recordService
             .deleteRecords(username, yearTag, program)
-            .then(() => userService.update(username, { uploadedData: moment().format('MM/DD/YYYY') }))
+            .then(() => userService.update(username, program, { uploadedData: moment().format('MM/DD/YYYY') }))
             .then(() => recordService.createMultiple(recordsList))
             .then(response => res.json(response))
             .catch(err => next(err));
