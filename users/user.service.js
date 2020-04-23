@@ -24,7 +24,8 @@ async function authenticate(username) {
     let user = await User.find({ username });
     // If a user doesnt exist ask him to get registered
     winston.info(username + " -- " + "Request to login");
-    if (!user) throw Error(("Sorry but we don't have your information on record. Please get in touch with your program administrator to get onboarded. Alternatively you can drop a mail to venkat.bandi@usask.ca for assistance."));
+
+    if (user.length == 0) throw Error(("Sorry but we don't have your information on record. Please get in touch with your program administrator to get onboarded. Alternatively you can drop a mail to venkat.bandi@usask.ca for assistance."));
 
     // get the list of programs the user has access to 
     let programList = [];
