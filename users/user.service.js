@@ -11,6 +11,7 @@ module.exports = {
     authenticate,
     reIssueToken,
     getAllResidentNames,
+    getAllResidentNamesAcrossPrograms,
     getAllUsers,
     create,
     getByUsername,
@@ -106,6 +107,12 @@ async function reIssueToken(username, program) {
 async function getAllResidentNames(program) {
     return await User.find({ accessType: 'resident', program },
         "username fullname uploadedData currentPhase programStartDate rotationSchedule longitudinalSchedule citeExamScore ccFeedbackList oralExamScore isGraduated promotedDate");
+}
+
+// show all residents across all programs
+async function getAllResidentNamesAcrossPrograms() {
+    return await User.find({ accessType: 'resident' },
+        "username currentPhase programStartDate rotationSchedule longitudinalSchedule ccFeedbackList isGraduated");
 }
 
 // show all users in the user's program

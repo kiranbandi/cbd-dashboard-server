@@ -11,6 +11,7 @@ router.post('/authenticate', authenticate);
 // and if no access type specified error is thrown
 router.get('/residents', getAllResidentNames);
 // routes available only for admins and superadmins
+router.get('/residents-all', getAllResidentNamesAcrossPrograms);
 router.post('/reissuetoken', reIssueToken);
 router.post('/register', checkAdmin, register);
 router.post('/update/:username', checkAdmin, update);
@@ -55,6 +56,18 @@ function getAllResidentNames(req, res, next) {
         })
         .catch(err => next(err));
 }
+
+function getAllResidentNamesAcrossPrograms(req, res, next) {
+    //  these come unwrapped from the JWT token
+    let { username, accessType } = req.user;
+    winston.info(username + " -- " + "Request for list of residents across all programs");
+    if (accessType == 'super-admin' || accessType == 'director') {
+        userService.getAllResidentNamesAcrossPrograms()
+            .then(users => res.json(users))
+            .catch(err => next(err));
+    } else { res.status(401).json({ message: 'Unauthorized Access' }) }
+}
+
 
 function register(req, res, next) {
     //  this comes unwrapped from the JWT token
