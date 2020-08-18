@@ -4,9 +4,6 @@ const router = express.Router();
 const recordService = require('./record.service');
 const userService = require('../users/user.service');
 const winston = require('winston');
-const fs = require('fs');
-const path = require('path');
-var parse = require('csv-parse');
 
 // routes
 router.get('/all/:username', getRecordByUserName);

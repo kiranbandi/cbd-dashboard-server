@@ -42,5 +42,8 @@ app.use('/api/records', require('./records/record.controller'));
 // api routes for narrative data fetching APIs
 app.use('/api/narratives', require('./narratives/narrative.controller'));
 
+// api routes for narrative data fetching APIs
+app.use('/api/tasks', require('./tasks/task.controller'));
+
 // global error handler
 app.use(errorHandler);
