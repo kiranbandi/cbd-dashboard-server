@@ -26,7 +26,7 @@ function storeTaskList(req, res, next) {
     let { taskList } = req.body, { username, accessType, program } = req.user;
 
     if (['admin', 'super-admin'].indexOf(accessType) > -1 || username == req.body.username) {
-        winston.info(username + " -- " + program + " -- " + "Request to update task list of " + req.params.username);
+        winston.info(username + " -- " + program + " -- " + "Request to update task list of " + req.body.username);
 
         taskService
             .storeTaskList(req.body.username, program, taskList)
