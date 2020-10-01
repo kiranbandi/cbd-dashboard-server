@@ -146,7 +146,7 @@ function reIssueToken(req, res, next) {
 function checkAdmin(req, res, next) {
     //  this comes unwrapped from the JWT token
     let { accessType } = req.user;
-    if (accessType == 'admin' || accessType == 'super-admin') {
+    if (accessType == 'admin' || accessType == 'director' || accessType == 'super-admin') {
         next();
     } else {
         res.status(401).json({ message: 'Unauthorized Access' });
