@@ -80,16 +80,21 @@ function storeRecords(req, res, next) {
     // to do this we first delete all records for the given username
     // and then store the new upload date into the user table 
     // and then finally write the records
+
+    winston.info('asdasdasdasdasd');
+
     let { username, yearTag, recordsList } = req.body, { program } = req.user;
     winston.info(req.user.username + " -- " + program + " -- " + "Request to store records for " + req.body.username);
 
     // set the program on all records based on the user program 
     recordsList.map((record) => { record.program = program });
 
+    winston.info(program);
+
     if (program == 'UNDERGRADUATE') {
         recordService
-        // .deleteUGRecords('UNDERGRADUATE', 'app')
-            .createMultiple(recordsList)
+            .deleteUGRecords('UNDERGRADUATE', 'app')
+            .then(() => recordService.createMultiple(recordsList))
             .then(response => res.json(response))
             .catch(err => next(err));
 
