@@ -84,6 +84,7 @@ function storeRecords(req, res, next) {
     winston.info(req.user.username + " -- " + program + " -- " + "Request to store records for " + req.body.username);
     // set the program on all records based on the user program 
     recordsList.map((record) => { record.program = program });
+
     if (program == 'UNDERGRADUATE') {
         recordService
             .deleteUGRecords('UNDERGRADUATE', 'app')
