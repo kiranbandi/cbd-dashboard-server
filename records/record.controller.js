@@ -86,9 +86,9 @@ function storeRecords(req, res, next) {
     // set the program on all records based on the user program 
     recordsList.map((record) => { record.program = program });
 
-    if (program == 'UNDERGRADUATE' && req.body.username == 'all') {
+    if (program == 'UNDERGRADUATE') {
         recordService
-            .deleteUGRecords('UNDERGRADUATE', yearTag)
+            .deleteUGRecords('UNDERGRADUATE', 'app')
             .then(() => recordService.createMultiple(recordsList))
             .then(response => res.json(response))
             .catch(err => next(err));
