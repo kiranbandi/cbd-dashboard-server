@@ -51,12 +51,18 @@ function getRecordsByYear(req, res, next) {
     winston.info(username + " -- " + program + " -- " + "Request for Data from year " + academicYear);
     if (['admin', 'super-admin', 'director'].indexOf(accessType) > -1) {
         // If an admin or director is accessing the data then force set the program 
-        if (accessType == 'admin') {
-            programSpecific = true;
+        if (accessType == 'admin') { programSpecific = true }
+        // For UG records are tagged for each year annually 
+        // instead of bi-annually so need to fetch them differently
+        if (program == 'UNDERGRADUATE') {
+            recordService.getUGRecordsByYear(academicYear)
+                .then(records => res.json(records))
+                .catch(err => next(err));
+        } else {
+            recordService.getRecordsByYear(academicYear, programSpecific, program)
+                .then(records => res.json(records))
+                .catch(err => next(err));
         }
-        recordService.getRecordsByYear(academicYear, programSpecific, program)
-            .then(records => res.json(records))
-            .catch(err => next(err));
     } else {
         res.status(401).json({ message: 'Unauthorized Access' });
     }

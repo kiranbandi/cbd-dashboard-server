@@ -8,6 +8,7 @@ module.exports = {
     deleteUGRecords,
     getAllRecords,
     getRecordsByYear,
+    getUGRecordsByYear,
     getAllObserversList,
     getRecordsByObserverName
 };
@@ -29,9 +30,11 @@ async function getRecordsByYear(academicYear, programSpecific = true, program) {
     else {
         return await Record.find({ 'year_tag': { $in: [academicYear + '-2', (+academicYear + 1) + '-1'] } });
     }
-
 }
 
+async function getUGRecordsByYear(year_tag, program = 'UNDERGRADUATE') {
+    return await Record.find({ program, year_tag })
+}
 
 async function createMultiple(recordsList) {
     return await Record.collection.insertMany(recordsList);
