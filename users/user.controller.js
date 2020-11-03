@@ -13,13 +13,13 @@ router.get('/residents', getAllResidentNames);
 // routes available only for admins and superadmins
 router.get('/residents-all', getAllResidentNamesAcrossPrograms);
 router.post('/reissuetoken', reIssueToken);
-router.post('/register', checkAdmin, register);
-router.post('/update/:username', checkAdmin, update);
-router.post('/update-cc-feedback/:username', checkAdmin, updateCCFeedbackList);
-router.post('/update-exam-score/:username', checkAdmin, updateExamscore);
-router.get('/all', checkAdmin, getAllUsers);
-router.get('/:username', checkAdmin, getByUsername);
-router.delete('/:username', checkAdmin, deleteUser);
+router.post('/register', checkAccess, register);
+router.post('/update/:username', checkAccess, update);
+router.post('/update-cc-feedback/:username', checkAccess, updateCCFeedbackList);
+router.post('/update-exam-score/:username', checkAccess, updateExamscore);
+router.get('/all', checkAccess, getAllUsers);
+router.get('/:username', checkAccess, getByUsername);
+router.delete('/:username', checkAccess, deleteUser);
 
 
 module.exports = router;
@@ -143,10 +143,10 @@ function reIssueToken(req, res, next) {
         .catch(err => next(err));
 }
 
-function checkAdmin(req, res, next) {
+function checkAccess(req, res, next) {
     //  this comes unwrapped from the JWT token
     let { accessType } = req.user;
-    if (accessType == 'admin' || accessType == 'director' || accessType == 'super-admin') {
+    if (accessType == 'admin' || accessType == 'director' || accessType == 'super-admin' || accessType == 'reviewer') {
         next();
     } else {
         res.status(401).json({ message: 'Unauthorized Access' });
