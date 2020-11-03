@@ -49,7 +49,7 @@ function getRecordsByYear(req, res, next) {
     //  this comes unwrapped from the JWT token
     let { username, accessType, program } = req.user, { academicYear, programSpecific = true } = req.body;
     winston.info(username + " -- " + program + " -- " + "Request for Data from year " + academicYear);
-    if (['admin', 'super-admin', 'director'].indexOf(accessType) > -1) {
+    if (['admin', 'super-admin', 'director', 'reviewer'].indexOf(accessType) > -1) {
         // If an admin or director is accessing the data then force set the program 
         if (accessType == 'admin') { programSpecific = true }
         // For UG records are tagged for each year annually 
