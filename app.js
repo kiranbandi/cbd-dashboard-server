@@ -28,7 +28,7 @@ app.use(bodyParser.urlencoded({ limit: '50mb', extended: false }));
 app.use(bodyParser.json({ limit: '50mb' }));
 
 // Start the Server
-app.listen(8081, () => { winston.debug("Server Live on Port 8081") });
+app.listen(80, () => { winston.debug("Server Live on Port 80") });
 
 // use JWT auth to secure the api
 app.use(jwt());
