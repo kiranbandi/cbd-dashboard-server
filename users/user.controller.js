@@ -27,7 +27,7 @@ module.exports = router;
 // called to authenticate a user by checking the validity of the token issue by PAWS
 function authenticate(req, res, next) {
     //  this comes unwrapped from the JWT token
-    validateTicket(req.body)
+    validateTicket(req.body, req.get('host'))
         .catch((err) => res.status(400).json({ message: err }))
         .then((nsid) => userService.authenticate(nsid))
         .then((user) => res.json(user))
@@ -74,7 +74,7 @@ function register(req, res, next) {
     let { username, program } = req.user;
     winston.info(username + " -- " + program + " -- " + "Request to create new user");
 
-    userService.create({...req.body, program })
+    userService.create({ ...req.body, program })
         // no message to send , if there is no error the UI simply shows that user has been created
         .then(() => res.json({}))
         .catch(err => next(err));
