@@ -9,6 +9,8 @@ let pawsValidateURL = 'https://cas.usask.ca/cas/serviceValidate',
 function validateTicket({ ticket, isDevSite }, service) {
     return new Promise((resolve, reject) => {
         // validate the ticket against paws
+        console.log(pawsValidateURL)
+        console.log({ 'params': { ticket, service: (isDevSite ? devURL : service) } })
         axios.get(pawsValidateURL, { 'params': { ticket, service: (isDevSite ? devURL : service) } })
             .then((response) => {
 
