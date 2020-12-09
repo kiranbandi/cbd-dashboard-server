@@ -4,7 +4,6 @@ const axios = require('axios');
 let pawsValidateURL = 'https://cas.usask.ca/cas/serviceValidate',
     devURL = 'https://localhost:8887/';
 
-
 function validateTicket({
     ticket,
     isDevSite
