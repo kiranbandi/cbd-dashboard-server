@@ -10,18 +10,9 @@ function validateTicket({
 }, service) {
     return new Promise((resolve, reject) => {
         // validate the ticket against paws
-        axios.get(pawsValidateURL, {
-                'params': {
-                    ticket,
-                    service: (isDevSite ? devURL : service)
-                }
-            })
+        axios.get(pawsValidateURL, { 'params': { ticket, service: (isDevSite ? devURL : service + '/') } })
             .then((response) => {
-
-                const {
-                    data = ''
-                } = response;
-
+                const { data = '' } = response;
                 if (data.indexOf('INVALID_TICKET') >= 1) {
                     reject('Invalid Ticket');
                 } else if (data.indexOf('INVALID_SERVICE') >= 1) {
