@@ -27,7 +27,7 @@ module.exports = router;
 // called to authenticate a user by checking the validity of the token issue by PAWS
 function authenticate(req, res, next) {
     //  this comes unwrapped from the JWT token
-    validateTicket(req.body, 'https://' + req.get('host'))
+    validateTicket(req.body, req.get('origin'))
         .catch((err) => res.status(400).json({ message: err }))
         .then((nsid) => userService.authenticate(nsid))
         .then((user) => res.json(user))

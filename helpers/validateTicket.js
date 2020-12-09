@@ -1,16 +1,12 @@
 const axios = require('axios');
 
 // PAWS Validate URL
-let pawsValidateURL = 'https://cas.usask.ca/cas/serviceValidate',
-    devURL = 'https://localhost:8887/';
+let pawsValidateURL = 'https://cas.usask.ca/cas/serviceValidate';
 
-function validateTicket({
-    ticket,
-    isDevSite
-}, service) {
+function validateTicket({ ticket }, service) {
     return new Promise((resolve, reject) => {
         // validate the ticket against paws
-        axios.get(pawsValidateURL, { 'params': { ticket, service: (isDevSite ? devURL : service + '/') } })
+        axios.get(pawsValidateURL, { 'params': { ticket, service } })
             .then((response) => {
                 const { data = '' } = response;
                 if (data.indexOf('INVALID_TICKET') >= 1) {
