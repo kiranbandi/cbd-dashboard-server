@@ -8,4 +8,4 @@ RUN npm i
 
 COPY . /app
 
-CMD npm run prod
+CMD npm run prod-docker

@@ -10,10 +10,12 @@ const config = require('./config');
 var app = express();
 
 // Use morgan for logging Requests , combined along with log outputs from winston
-app.use(morgan('combined', { stream: winston.stream }));
+app.use(morgan('combined', {
+    stream: winston.stream
+}));
 
 // Setting response headers to be used for all API endpoints
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
     // cors header is set only when header is in the list of allowed origins from the config file
     if (config.origins.indexOf(req.headers.origin) > -1) {
         res.setHeader('Access-Control-Allow-Origin', req.headers.origin);
@@ -24,11 +26,20 @@ app.use(function(req, res, next) {
 });
 
 // Attach data from API call to request object body
-app.use(bodyParser.urlencoded({ limit: '50mb', extended: false }));
-app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({
+    limit: '50mb',
+    extended: false
+}));
+app.use(bodyParser.json({
+    limit: '50mb'
+}));
+
+const PORT = process.env.NODE_ENV == 'production_docker' ? 80 : 8081;
 
 // Start the Server
-app.listen(80, () => { winston.debug("Server Live on Port 80") });
+app.listen(PORT, () => {
+    winston.debug("Server Live on Port " + PORT);
+});
 
 // use JWT auth to secure the api
 app.use(jwt());

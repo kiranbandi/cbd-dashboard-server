@@ -6,7 +6,8 @@
     "scripts": {
         "start": "cross-env NODE_ENV=development nodemon --inspect app.js",
         "start-break": "cross-env NODE_ENV=development nodemon --inspect-brk app.js",
-        "prod": "cross-env NODE_ENV=production node app.js "
+        "prod": "cross-env NODE_ENV=production node app.js",
+        "prod-docker": "cross-env NODE_ENV=production_docker node app.js"
     },
     "keywords": [
         "node",
