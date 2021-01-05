@@ -112,7 +112,7 @@ async function getAllResidentNames(program) {
 // show all residents across all programs
 async function getAllResidentNamesAcrossPrograms() {
     return await User.find({ accessType: 'resident' },
-        "username currentPhase programStartDate rotationSchedule longitudinalSchedule ccFeedbackList isGraduated");
+        "username program currentPhase programStartDate rotationSchedule longitudinalSchedule ccFeedbackList isGraduated");
 }
 
 // show all users in the user's program
