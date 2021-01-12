@@ -70,7 +70,7 @@ async function reIssueToken(username, program) {
         }
         // if not check if the selected program is in the list of user profiles and if not return unauthorized  
         else if (programList.indexOf(program) > -1) {
-            user = user[accessTypeList.indexOf(program)];
+            user = user[programList.indexOf(program)];
         }
         else {
             throw Error("Sorry but you are not authorized to perform this action.");
