@@ -1,17 +1,15 @@
 const expressJwt = require('express-jwt');
 const config = require('../config');
 
-module.exports = jwt;
-
+// pass in public routes that don't require authentication in the path array 
 function jwt() {
     const secret = config.key;
-    return expressJwt({ secret }).unless({
-        path: [
-            // public routes that don't require authentication
-            '/api/users/authenticate'
-        ]
+    return expressJwt({ secret, algorithms: ['HS256'] }).unless({
+        path: ['/api/users/authenticate']
     });
 }
+
+module.exports = jwt;
 
 //  We currently use a HS256 , Hash based authentication
 //  But this will be updated to a RS 256 Signature

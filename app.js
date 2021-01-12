@@ -35,7 +35,7 @@ app.listen(PORT, () => { winston.debug("Server Live on Port " + PORT) });
 // use JWT auth to secure the api
 app.use(jwt());
 
-// // api routes for authentication and user related APIs
+// api routes for authentication and user related APIs
 app.use('/api/users', require('./users/user.controller'));
 
 // api routes for record and data fetching APIs

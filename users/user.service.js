@@ -55,57 +55,50 @@ async function authenticate(username) {
 
 async function reIssueToken(username, program) {
     let user = await User.find({ username });
-
     // If a user doesnt exist ask him to get registered
     if (!user) throw Error("Sorry but we don't have your information on record.");
-
-    // get the list of programs the user has access to 
+    // If there are multiple user profiles
+    // get a list of programs the user has profiles in 
+    // and a list of accessTypes the user has
     let programList = [];
     if (user.length > 0) {
         programList = user.map((d) => d.program);
-        // set the user list to the first user and 
-        // then pass in the list of programs he has access to
-        user = user[0];
+        const accessTypeList = user.map((d) => d.accessType);
+        // if a user has a super admin profile use it and reissue token for the selected program 
+        if (accessTypeList.indexOf('super-admin') > -1) {
+            user = user[accessTypeList.indexOf('super-admin')];
+        }
+        // if not check if the selected program is in the list of user profiles and if not return unauthorized  
+        else if (programList.indexOf(program) > -1) {
+            user = user[accessTypeList.indexOf(program)];
+        }
+        else {
+            throw Error("Sorry but you are not authorized to perform this action.");
+        }
     }
-
-    // return a signed token once authentication is complete
+    // If there is only one user profile then check if the user is 
+    // super admin if yes reissue token for the selected program, 
+    // if not the user is not permitted for the selected action since he cannot switch programs
+    else {
+        if (user.toObject().accessType != 'super-admin') {
+            throw Error("Sorry but you are not authorized to perform this action.");
+        }
+    }
+    // once the desired user profile has been found and set
+    // get its corresponding accessType and accessList and set them in the token
     let { accessType, accessList } = user.toObject();
 
-    // if he is a super-admin pass him through
-    // as token mapped to any program can be reissued only for superadmins 
-    if (accessType == 'super-admin') {
-        // token has the username,accessType , program the user belongs to and the list of residents user can access
-        const token = jwt.sign({ username, accessType, accessList, program, programList }, config.key);
-        return {
-            username,
-            accessType,
-            accessList,
-            program,
-            token,
-            programList
-        };
-    }
-    // for other users check if the program the user wants to access is in his program list 
-    // meaning he has a profile mapped for that program
-    else if (programList.indexOf(program) > -1) {
+    // token has the username,accessType , program the user belongs to and the list of residents user can access
+    const token = jwt.sign({ username, program, accessType, accessList, programList }, config.key);
+    return {
+        username,
+        program,
+        token,
+        accessType,
+        accessList,
+        programList
+    };
 
-        // update the accessType and accessList as present in the user profile
-        // for the selected program
-        let { accessType, accessList } = user[programList.indexOf(program)].toObject();
-
-        // token has the username,accessType , program the user belongs to and the list of residents user can access
-        const token = jwt.sign({ username, accessType, accessList, program, programList }, config.key);
-        return {
-            username,
-            accessType,
-            accessList,
-            program,
-            token,
-            programList
-        };
-    } else {
-        throw Error("Sorry but you are not authorized to perform this action.");
-    }
 }
 
 // show all residents in the user's program
