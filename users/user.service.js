@@ -69,7 +69,7 @@ async function reIssueToken(username, program) {
     }
 
     // return a signed token once authentication is complete
-    const { accessType, accessList } = user.toObject();
+    let { accessType, accessList } = user.toObject();
 
     // if he is a super-admin pass him through
     // as token mapped to any program can be reissued only for superadmins 
@@ -88,6 +88,11 @@ async function reIssueToken(username, program) {
     // for other users check if the program the user wants to access is in his program list 
     // meaning he has a profile mapped for that program
     else if (programList.indexOf(program) > -1) {
+
+        // update the accessType and accessList as present in the user profile
+        // for the selected program
+        let { accessType, accessList } = user[programList.indexOf(program)].toObject();
+
         // token has the username,accessType , program the user belongs to and the list of residents user can access
         const token = jwt.sign({ username, accessType, accessList, program, programList }, config.key);
         return {
@@ -176,8 +181,8 @@ async function updateExamscore(username, program, oralExamScore, citeExamScore) 
 async function deleteUser(username, program) {
     // first delete all the resident records against the given username
     await recordService.deleteRecords(username, program)
-        // then delete all the resident narratives against the given username
+    // then delete all the resident narratives against the given username
     await narrativeService.deleteNarratives(username, program)
-        // then delete the actual user record
+    // then delete the actual user record
     await User.deleteOne({ username, program });
 }
