@@ -6,7 +6,7 @@ let pawsValidateURL = 'https://cas.usask.ca/cas/serviceValidate';
 function validateTicket({ ticket }, service) {
     return new Promise((resolve, reject) => {
         // validate the ticket against paws
-        axios.get(pawsValidateURL, { 'params': { ticket, service } })
+        axios.get(pawsValidateURL, { 'params': { ticket, service:'https://cbme.usask.ca/' } })
             .then((response) => {
                 const { data = '' } = response;
                 if (data.indexOf('INVALID_TICKET') >= 1) {
