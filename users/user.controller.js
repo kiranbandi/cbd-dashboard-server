@@ -17,6 +17,7 @@ router.post('/register', checkAccess, register);
 router.post('/update/:username', checkAccess, update);
 router.post('/update-cc-feedback/:username', checkAccess, updateCCFeedbackList);
 router.post('/update-exam-score/:username', checkAccess, updateExamscore);
+router.post('/update-completion-status/:username', checkAccess, updateCompletionStatus);
 router.get('/all', checkAccess, getAllUsers);
 router.get('/:username', checkAccess, getByUsername);
 router.delete('/:username', checkAccess, deleteUser);
@@ -115,6 +116,15 @@ function updateExamscore(req, res, next) {
         .catch(err => next(err));
 }
 
+function updateCompletionStatus(req, res, next) {
+    //  this comes unwrapped from the JWT token
+    let { username, program } = req.user;
+    winston.info(username + " -- " + program + " -- " + "Updating Completion Status for username - " + req.params.username);
+    userService.updateCompletionStatus(req.params.username, program, req.body.completionStatus)
+        .then((data) => res.json({ data }))
+        .catch(err => next(err));
+}
+
 function getByUsername(req, res, next) {
     //  this comes unwrapped from the JWT token
     let { program } = req.user;
@@ -146,7 +156,8 @@ function reIssueToken(req, res, next) {
 function checkAccess(req, res, next) {
     //  this comes unwrapped from the JWT token
     let { accessType } = req.user;
-    if (accessType == 'admin' || accessType == 'director' || accessType == 'super-admin' || accessType == 'reviewer') {
+    // block residents from getting any data other than their own
+    if (['admin', 'director', 'super-admin', 'reviewer', 'supervisor'].indexOf(accessType) > -1) {
         next();
     } else {
         res.status(401).json({ message: 'Unauthorized Access' });

@@ -27,6 +27,7 @@ const schema = new Schema({
     longitudinalSchedule: { type: Object },
     citeExamScore: { type: Object },
     oralExamScore: { type: Object },
+    completionStatus: { type: Object },
     ccFeedbackList: { type: Array },
     // flag to indicate when a user has moved out or graduated from the program
     isGraduated: { type: Boolean }
