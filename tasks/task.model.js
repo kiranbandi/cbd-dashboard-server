@@ -1,13 +1,35 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
-// The schema is more for one task list than one individual task
-//  easier to handle this way :-(
-const schema = new Schema({
-    username: { type: String, required: true },
-    taskList: { type: Array },
-    program: { type: String, required: true }
+const { DataTypes, Sequelize } = require('sequelize');
+const config = require('../config');
+
+const sequelize = new Sequelize(config.MariaDbConfig);
+
+const TaskList = sequelize.define('TaskList', {
+    id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+    },
+    username: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    program: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    taskList: {
+        type: DataTypes.JSON,
+        allowNull: true
+    }
+}, {
+    tableName: 'task_lists',
+    timestamps: false,
+    indexes: [
+        {
+            unique: true,
+            fields: ['username', 'program']
+        }
+    ]
 });
 
-schema.set('toJSON', { virtuals: true });
-
-module.exports = mongoose.model('TaskList', schema);
+module.exports = TaskList;

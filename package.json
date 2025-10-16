@@ -7,7 +7,16 @@
         "start": "cross-env NODE_ENV=development nodemon --inspect app.js",
         "start-break": "cross-env NODE_ENV=development nodemon --inspect-brk app.js",
         "prod": "cross-env NODE_ENV=production node app.js",
-        "prod-docker": "cross-env NODE_ENV=production_docker node app.js"
+        "prod-docker": "cross-env NODE_ENV=production_docker node app.js",
+        "init-db": "node scripts/init-database.js",
+        "migrate": "node scripts/migrate-mongodb-to-mariadb.js",
+        "export-mongodb": "node scripts/export-mongodb-data.js",
+        "import-mariadb": "node scripts/import-to-mariadb.js",
+        "fix-columns": "node scripts/fix-column-sizes.js",
+        "remigrate": "node scripts/remigrate-truncated-records.js",
+        "test-json": "node scripts/test-json-parsing.js",
+        "test-api": "node scripts/test-api-json.js",
+        "show-structure": "node scripts/show-api-structure.js"
     },
     "keywords": [
         "node",
@@ -26,8 +35,9 @@
         "jsonwebtoken": "^8.4.0",
         "lodash": "^4.17.21",
         "moment": "^2.24.0",
+        "mysql2": "^3.6.0",
+        "sequelize": "^6.32.1",
         "mongodb": "^3.6.3",
-        "mongoose": "^5.12.13",
         "morgan": "^1.9.0",
         "nodemailer": "^6.6.1",
         "promise": "^8.0.1",

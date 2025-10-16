@@ -1,4 +1,4 @@
-const db = require('../helpers/db');
+const db = require('../helpers/mariadb');
 const Narrative = db.Narrative;
 
 module.exports = {
@@ -8,22 +8,20 @@ module.exports = {
 };
 
 async function getNarrativesByUserName(username, program) {
-    return await Narrative.find({ username, program });
+    return await Narrative.findAll({ where: { username, program } });
 }
-
 
 async function createMultiple(narrativesList) {
-    return await Narrative.collection.insertMany(narrativesList);
+    return await Narrative.bulkCreate(narrativesList);
 }
-
 
 async function deleteNarratives(username, year_tag = 'all', program) {
     //  if year tag is all then delete everything
     if (year_tag == 'all') {
-        return await Narrative.deleteMany({ username, program });
+        return await Narrative.destroy({ where: { username, program } });
     }
     // if not selectively delete narratives that match the given year tag 
     else {
-        return await Narrative.deleteMany({ username, year_tag, program });
+        return await Narrative.destroy({ where: { username, year_tag, program } });
     }
 }
