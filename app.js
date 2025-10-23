@@ -27,7 +27,7 @@ app.use(function(req, res, next) {
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: false }));
 app.use(bodyParser.json({ limit: '50mb' }));
 
-const PORT = process.env.NODE_ENV == 'production_docker' ? 80 : 8081;
+const PORT = process.env.NODE_ENV == 'production_docker' ? 80 : 8001;
 
 // Start the Server
 app.listen(PORT, () => { winston.debug("Server Live on Port " + PORT) });
