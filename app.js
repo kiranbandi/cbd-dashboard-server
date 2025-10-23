@@ -36,16 +36,16 @@ app.listen(PORT, () => { winston.debug("Server Live on Port " + PORT) });
 app.use(jwt());
 
 // api routes for authentication and user related APIs
-app.use('/api/users', require('./users/user.controller'));
+app.use('/epa-dashboard/api/users', require('./users/user.controller'));
 
 // api routes for record and data fetching APIs
-app.use('/api/records', require('./records/record.controller'));
+app.use('/epa-dashboard/api/records', require('./records/record.controller'));
 
 // api routes for narrative data fetching APIs
-app.use('/api/narratives', require('./narratives/narrative.controller'));
+app.use('/epa-dashboard/api/narratives', require('./narratives/narrative.controller'));
 
 // api routes for narrative data fetching APIs
-app.use('/api/tasks', require('./tasks/task.controller'));
+app.use('/epa-dashboard/api/tasks', require('./tasks/task.controller'));
 
 // global error handler
 app.use(errorHandler);

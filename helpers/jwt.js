@@ -5,7 +5,7 @@ const config = require('../config');
 function jwt() {
     const secret = config.key;
     return expressJwt({ secret, algorithms: ['HS256'] }).unless({
-        path: ['/api/users/authenticate']
+        path: ['/epa-dashboard/api/users/authenticate']
     });
 }
 
