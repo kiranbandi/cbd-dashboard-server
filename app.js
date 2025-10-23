@@ -27,10 +27,17 @@ app.use(function(req, res, next) {
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: false }));
 app.use(bodyParser.json({ limit: '50mb' }));
 
+// Log request paths for debugging
+app.use((req, res, next) => {
+    winston.debug(`${req.method} ${req.path} - Full URL: ${req.url}`);
+    next();
+});
+
 const PORT = process.env.NODE_ENV == 'production_docker' ? 80 : 8001;
 
 // Start the Server
 app.listen(PORT, () => { winston.debug("Server Live on Port " + PORT) });
+
 
 // use JWT auth to secure the api
 app.use(jwt());
