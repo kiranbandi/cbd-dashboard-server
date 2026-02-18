@@ -1,12 +1,15 @@
 const axios = require('axios');
+require('dotenv').config();
 
 // PAWS Validate URL
-let pawsValidateURL = 'https://cas.usask.ca/cas/serviceValidate';
+let pawsValidateURL = process.env.PAWS_VALIDATE_URL || 'https://cas.usask.ca/cas/serviceValidate';
+const webUrl = (process.env.WEB_URL || 'https://localhost.usask.ca:8080').replace(/\/$/, '');
+const serviceUrl = `${webUrl}/#/`;
 
 function validateTicket({ ticket }, service) {
     return new Promise((resolve, reject) => {
         // validate the ticket against paws
-        axios.get(pawsValidateURL, { 'params': { ticket, 'service': "https://medmedicdev.usask.ca/epa-dashboard/#/" } })
+        axios.get(pawsValidateURL, { 'params': { ticket, 'service': service || serviceUrl } })
             .then((response) => {
                 const { data = '' } = response;
                 if (data.indexOf('INVALID_TICKET') >= 1) {

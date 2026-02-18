@@ -70,8 +70,5 @@ typings/
 # next.js build output
 .next
 
-# config file
-config.js
-
 # ignore data file
 data.csv

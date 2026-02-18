@@ -29,7 +29,7 @@ app.use(bodyParser.json({ limit: '50mb' }));
 
 // Log request paths for debugging
 app.use((req, res, next) => {
-    winston.debug(`${req.method} ${req.path} - Full URL: ${req.url}`);
+    console.log(`[API CALL] ${req.method} ${req.path} - Origin: ${req.headers.origin || 'none'}`);
     next();
 });
 
