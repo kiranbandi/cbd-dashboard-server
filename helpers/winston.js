@@ -1,5 +1,4 @@
 // configuration file for loggin using winston
-//  code sourced from tutorial on - https://www.digitalocean.com/community/tutorials/how-to-use-winston-to-log-node-js-applications
 
 const appRoot = require('app-root-path');
 const logger = require('winston');

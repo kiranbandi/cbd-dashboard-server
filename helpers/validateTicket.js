@@ -6,10 +6,10 @@ let pawsValidateURL = process.env.PAWS_VALIDATE_URL || 'https://cas.usask.ca/cas
 const webUrl = (process.env.WEB_URL || 'https://localhost.usask.ca:8080').replace(/\/$/, '');
 const serviceUrl = `${webUrl}/#/`;
 
-function validateTicket({ ticket }, service) {
+function validateTicket({ ticket }) {
     return new Promise((resolve, reject) => {
         // validate the ticket against paws
-        axios.get(pawsValidateURL, { 'params': { ticket, 'service': service || serviceUrl } })
+        axios.get(pawsValidateURL, { 'params': { ticket, 'service': serviceUrl } })
             .then((response) => {
                 const { data = '' } = response;
                 if (data.indexOf('INVALID_TICKET') >= 1) {
